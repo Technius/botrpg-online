@@ -8,6 +8,12 @@ import play.api.mvc.WebSocket.FrameFormatter
 
 case object Connect
 
+case class Disconnect(user: ActorRef)
+
+case object JoinLobby
+
+case object LeaveLobby
+
 case class StartGame(player1: ActorRef, player2: ActorRef)
 
 case class InitGame(game: ActorRef)

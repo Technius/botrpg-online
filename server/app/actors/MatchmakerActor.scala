@@ -6,23 +6,35 @@ import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
 import botrpg.common._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.Random
 
 class MatchmakerActor extends Actor {
   val random = new Random
-  val pending = scala.collection.mutable.ArrayBuffer[ActorRef]()
+  val pending = ArrayBuffer[ActorRef]()
+  val lobby = ArrayBuffer[ActorRef]()
 
   def receive = {
+    case JoinLobby =>
+      val user = sender()
+      if (!lobby.contains(user)) {
+        lobby += user
+        pendingNames map (WaitingPlayers(_)) pipeTo user
+      }
+    case LeaveLobby => leave(Seq(sender()))
+    case Disconnect(user) => leave(Seq(user))
     case GetWaiting =>
-      implicit val timeout: Timeout = 5 seconds
-      val waiting = pending.toList
       val originalSender = sender()
-      val namesFuture = waiting map (a => ask(a, GetName).mapTo[String])
-      val combinedFuture = Future.sequence(namesFuture)
-      combinedFuture map (WaitingPlayers(_)) pipeTo originalSender
-    case RequestGame => pending += sender()
+      pendingNames map (WaitingPlayers(_)) pipeTo originalSender
+    case RequestGame =>
+      val user = sender()
+      if (!pending.contains(user)) {
+        pending += user
+        val nameFut = pendingNames map (WaitingPlayers(_))
+        lobby.toList foreach (nameFut pipeTo _)
+      }
     case FindGame =>
       if (pending.length > 0) {
         val index = random.nextInt(pending.length)
@@ -33,8 +45,19 @@ class MatchmakerActor extends Actor {
           self forward FindGame
         }
       }
-    case StartGame(p1, p2) =>
-      pending --= Seq(p1, p2)
-      context.actorOf(GameActor.props(p1, p2, self))
+    case msg @ StartGame(p1, p2) =>
+      leave(Seq(p1, p2))
+      context.actorSelection("..") ! msg
+  }
+
+  def leave(users: Seq[ActorRef]) = {
+    lobby --= users
+    pending --= users
+  }
+
+  def pendingNames = {
+    implicit val timeout: Timeout = 5 seconds
+    val namesFuture = pending.toList map (a => ask(a, GetName).mapTo[String])
+    Future.sequence(namesFuture)
   }
 }

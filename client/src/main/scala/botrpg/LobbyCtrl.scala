@@ -35,12 +35,7 @@ class LobbyCtrl(
       $scope.$apply()
     }
 
-    val getWaiting = () => socket.send(write(SocketMessage(GetWaiting)))
-
-    $scope.getWaiting = getWaiting
-
+    $scope.getWaiting = () => socket.send(write(SocketMessage(GetWaiting)))
     $scope.requestGame = () => socket.send(write(SocketMessage(RequestGame)))
-
-    getWaiting()
   }
 }

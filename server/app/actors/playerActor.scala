@@ -40,6 +40,7 @@ class PlayerActor(
     case Event(LoginReq(name), NoData) =>
       out ! write(SocketMessage(LoggedIn))
       connections ! Connect
+      matchmaker ! JoinLobby
       goto(WithUser) using Matchmaking(name, false)
   }
 
@@ -48,6 +49,9 @@ class PlayerActor(
       implicit val timeout = Timeout(5 seconds)
       val future = ask(matchmaker, GetWaiting).mapTo[WaitingPlayers]
       future map (msg => write(SocketMessage(msg))) pipeTo out
+      stay
+    case Event(w: WaitingPlayers, _) =>
+      out ! write(SocketMessage(w))
       stay
     case Event(FindGame, n: Name) =>
       matchmaker ! FindGame
