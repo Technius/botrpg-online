@@ -35,11 +35,6 @@ class MatchmakerActor extends Actor {
       }
     case StartGame(p1, p2) =>
       pending --= Seq(p1, p2)
-      println(pending)
       context.actorOf(GameActor.props(p1, p2, self))
   }
-}
-
-object MatchmakerActor {
-  def props: Props = Props(new MatchmakerActor)
 }

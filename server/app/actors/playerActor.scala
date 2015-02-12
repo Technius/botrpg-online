@@ -25,7 +25,9 @@ case class Playing(
 
 class PlayerActor(
     out: ActorRef,
-    matchmaker: ActorRef) extends FSM[State, Data] {
+    connections: ActorRef) extends FSM[State, Data] {
+
+  val matchmaker = context.actorSelection("/user/system/matchmaker")
 
   override def receive = {
     case msg: String => super.receive(read[SocketMessage](msg).data)
@@ -37,6 +39,7 @@ class PlayerActor(
   when(NoUser) {
     case Event(LoginReq(name), NoData) =>
       out ! write(SocketMessage(LoggedIn))
+      connections ! Connect
       goto(WithUser) using Matchmaking(name, false)
   }
 
@@ -71,6 +74,6 @@ class PlayerActor(
 }
 
 object PlayerActor {
-  def props(out: ActorRef, matchmaker: ActorRef) =
-    Props(new PlayerActor(out, matchmaker))
+  def props(out: ActorRef, connections: ActorRef) =
+    Props(new PlayerActor(out, connections))
 }
