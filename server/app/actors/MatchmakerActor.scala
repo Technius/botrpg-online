@@ -12,7 +12,8 @@ import scala.util.Random
 
 class MatchmakerActor extends Actor {
   val random = new Random
-  var pending = scala.collection.mutable.ArrayBuffer[ActorRef]()
+  val pending = scala.collection.mutable.ArrayBuffer[ActorRef]()
+
   def receive = {
     case GetWaiting =>
       implicit val timeout: Timeout = 5 seconds

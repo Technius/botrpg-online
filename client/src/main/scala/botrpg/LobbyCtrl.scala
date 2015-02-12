@@ -29,7 +29,6 @@ class LobbyCtrl(
     socket.onmessage = { ev: MessageEvent =>
       read[SocketMessage](ev.data.toString).data match {
         case WaitingPlayers(players) =>
-          println(players)
           $scope.waiting = players.toJSArray
         case _ =>
       }
