@@ -18,7 +18,7 @@ class UserSpec(_system: ActorSystem) extends TestKit(_system)
   def fixture = new {
     val out = TestProbe()
     val matchmaker = TestProbe()
-    val user = TestFSMRef(new PlayerActor(out.ref, matchmaker.ref))
+    val user = TestFSMRef(new UserActor(out.ref, matchmaker.ref))
   }
 
   "A user" when {
@@ -36,7 +36,8 @@ class UserSpec(_system: ActorSystem) extends TestKit(_system)
     "logging in" should {
       "switch to matchmaking" in {
         f.user ! LoginReq("user")
-        f.user.stateData shouldEqual Matchmaking("user", true)
+        f.user.stateData shouldBe a [Matchmaking]
+        f.user.stateData.asInstanceOf[Matchmaking].name shouldBe "user"
       }
     }
 

@@ -19,7 +19,7 @@ class GameSpec(_system: ActorSystem) extends TestKit(_system)
     val matchProbe = TestProbe()
     val outProbes @ List(probe1, probe2) = List(TestProbe(), TestProbe())
     val List(player1, player2) = outProbes map (p => TestFSMRef(
-      new PlayerActor(p.ref, matchProbe.ref)))
+      new UserActor(p.ref, matchProbe.ref)))
     player1.setState(WithUser, Matchmaking("player1", false)) //workaround
     player2.setState(WithUser, Matchmaking("player2", false))
     val game = TestActorRef(new GameActor(player1, player2, matchProbe.ref))

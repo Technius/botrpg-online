@@ -14,6 +14,6 @@ object Connections extends Controller {
     Props[ConnectionsActor], name = "system")
 
   def socket = WebSocket.acceptWithActor[String, String] { request => out =>
-    PlayerActor.props(out, connections)
+    UserActor.props(out, connections)
   }
 }

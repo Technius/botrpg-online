@@ -16,8 +16,11 @@ Running
 
 To do
 =====
+In no particular order:
 * Client
   * Add Bootstrap for styling
+  * Improve look
   * Create matchmaking page
+  * Implement games
 * Server
-  * Refactor PlayerActor to UserActor
+  * Implement game starting and ending
