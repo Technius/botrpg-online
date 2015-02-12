@@ -10,20 +10,20 @@ import common._
 
 trait LobbyScope extends Scope {
 
-  var findingGame: Boolean = js.native
+  var requestingGame: Boolean = js.native
 
   var waiting: js.Array[String] = js.native
 
   var getWaiting: js.Function = js.native
 
-  var findGame: js.Function = js.native
+  var requestGame: js.Function = js.native
 }
 
 class LobbyCtrl(
     $scope: LobbyScope,
     $connection: Connection) extends Controller {
   $connection.verifyLogin foreach { case (socket, name) =>
-    $scope.findingGame = false
+    $scope.requestingGame = false
     $scope.waiting = js.Array()
 
     socket.onmessage = { ev: MessageEvent =>
@@ -39,7 +39,7 @@ class LobbyCtrl(
 
     $scope.getWaiting = getWaiting
 
-    $scope.findGame = () => socket.send(write(SocketMessage(RequestGame)))
+    $scope.requestGame = () => socket.send(write(SocketMessage(RequestGame)))
 
     getWaiting()
   }
