@@ -30,14 +30,14 @@ class GameActor(
   p2 ! GameReady(id.toString)
 
   var state: Game = {
-    implicit val timeout: Timeout = 5 seconds
+    implicit val timeout: Timeout = 5.seconds
     val p1NameFut = ask(p1, GetName).mapTo[String]
     val p2NameFut = ask(p2, GetName).mapTo[String]
     val gameFuture = for {
       p1Name <- p1NameFut
       p2Name <- p2NameFut
     } yield Game(p1 = (p1Name, Player(100, 50)), p2 = (p2Name, Player(100, 50)))
-    Await.result(gameFuture, 5 seconds)
+    Await.result(gameFuture, 5.seconds)
   }
 
   var playing: Boolean = true

@@ -51,7 +51,7 @@ class MatchmakerActor extends Actor {
         self ! StartGame(sender(), matched)
         sendRequestUpdate()
       } else {
-        context.system.scheduler.scheduleOnce(5 seconds) {
+        context.system.scheduler.scheduleOnce(5.seconds) {
           self forward FindGame
         }
       }
@@ -71,7 +71,7 @@ class MatchmakerActor extends Actor {
   }
 
   def pendingNames = {
-    implicit val timeout: Timeout = 5 seconds
+    implicit val timeout: Timeout = 5.seconds
     val namesFuture = pending.toList map (a => ask(a, GetName).mapTo[String])
     Future.sequence(namesFuture)
   }
