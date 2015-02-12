@@ -41,8 +41,6 @@ lazy val client = Project("client", file("client"))
   )
   .settings(commonSrcDirs: _*)
 
-scalaJSStage in Global := FastOptStage
-
 scalacOptions in Global ++= Seq(
   "-unchecked",
   "-deprecation",

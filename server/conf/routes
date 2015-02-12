@@ -4,10 +4,11 @@
 
 # Home page
 GET     /connect                    controllers.Connections.socket
-GET     /<.+>                       controllers.Assets.at(path="/public/", file="app.html")
-GET     /                           controllers.Assets.at(path="/public/", file="app.html")
+GET     /<.+>                       controllers.Application.serve
+GET     /                           controllers.Application.serve
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/app.js              controllers.Assets.at(path="/public", file="client-fastopt.js")
+GET     /assets/app.js              controllers.Assets.at(path="/public", file="client-opt.js")
+GET     /assets/app-dev.js          controllers.Assets.at(path="/public", file="client-fastopt.js")
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
