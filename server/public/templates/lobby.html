@@ -4,5 +4,10 @@
       {{player}}
     </li>
   </ul>
-  <button ng-click="requestGame()">Request game</button>
+  <button ng-show="!requestingGame" ng-click="requestGame()">
+    Request Game
+  </button>
+  <button ng-show="requestingGame" ng-click="cancelRequestGame()">
+    Cancel Matchmaking
+  </button>
 </div>

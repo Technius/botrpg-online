@@ -20,6 +20,6 @@ case class LoginReq(name: String) extends Message
  
 case object GetWaiting extends Message 
 
-case object CancelQueue extends Message
+case object CancelRequestGame extends Message
  
 case object RequestGame extends Message 

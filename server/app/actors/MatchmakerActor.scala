@@ -21,13 +21,22 @@ class MatchmakerActor extends Actor {
       val user = sender()
       if (!lobby.contains(user)) {
         lobby += user
-        pendingNames map (WaitingPlayers(_)) pipeTo user
+        sendRequestUpdate()
       }
-    case LeaveLobby => leave(Seq(sender()))
-    case Disconnect(user) => leave(Seq(user))
+    case LeaveLobby =>
+      val len = pending.length
+      leave(Seq(sender()))
+      if (pending.length != len) {
+        sendRequestUpdate()
+      }
+    case Disconnect(user) =>
+      self tell (LeaveLobby, user)
     case GetWaiting =>
       val originalSender = sender()
       pendingNames map (WaitingPlayers(_)) pipeTo originalSender
+    case CancelRequestGame =>
+      pending -= sender()
+      sendRequestUpdate()
     case RequestGame =>
       val user = sender()
       if (!pending.contains(user)) {
@@ -40,6 +49,7 @@ class MatchmakerActor extends Actor {
         val index = random.nextInt(pending.length)
         val matched = pending(index)
         self ! StartGame(sender(), matched)
+        sendRequestUpdate()
       } else {
         context.system.scheduler.scheduleOnce(5 seconds) {
           self forward FindGame
@@ -53,6 +63,11 @@ class MatchmakerActor extends Actor {
   def leave(users: Seq[ActorRef]) = {
     lobby --= users
     pending --= users
+  }
+
+  def sendRequestUpdate() = {
+    val nameFut = pendingNames map (WaitingPlayers(_))
+    lobby.toList foreach (nameFut pipeTo _)
   }
 
   def pendingNames = {

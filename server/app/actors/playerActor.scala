@@ -56,6 +56,9 @@ class PlayerActor(
     case Event(FindGame, n: Name) =>
       matchmaker ! FindGame
       stay using Matchmaking(n.name, true)
+    case Event(CancelRequestGame, n: Name) =>
+      matchmaker ! CancelRequestGame
+      stay using Matchmaking(n.name, false)
     case Event(RequestGame, n: Name) =>
       matchmaker ! RequestGame
       stay using Matchmaking(n.name, false)

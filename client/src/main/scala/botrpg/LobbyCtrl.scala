@@ -17,6 +17,8 @@ trait LobbyScope extends Scope {
   var getWaiting: js.Function = js.native
 
   var requestGame: js.Function = js.native
+
+  var cancelRequestGame: js.Function = js.native
 }
 
 class LobbyCtrl(
@@ -36,6 +38,13 @@ class LobbyCtrl(
     }
 
     $scope.getWaiting = () => socket.send(write(SocketMessage(GetWaiting)))
-    $scope.requestGame = () => socket.send(write(SocketMessage(RequestGame)))
+    $scope.requestGame = () => {
+      socket.send(write(SocketMessage(RequestGame)))
+      $scope.requestingGame = true
+    }
+    $scope.cancelRequestGame = () => {
+      socket.send(write(SocketMessage(CancelRequestGame)))
+      $scope.requestingGame = false
+    }
   }
 }
