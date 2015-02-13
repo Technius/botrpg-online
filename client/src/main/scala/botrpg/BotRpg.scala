@@ -23,5 +23,9 @@ object BotRpg extends JSApp {
           Route(controller="LobbyCtrl", templateUrl = "/assets/templates/lobby.html"))
 //        .when("/play", Route(controller = "", templateUrl = ""))
     }
+    
+    module.config { $locationProvider: js.Dynamic =>
+      $locationProvider.html5Mode(true)
+    }
   }
 }
