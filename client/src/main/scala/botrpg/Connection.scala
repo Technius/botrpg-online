@@ -18,7 +18,8 @@ class Connection($location: Location) extends Service {
   def openConnection(name: String): WebSocket = {
     _name = Some(name)
     socket foreach (_.close())
-    val sock = new WebSocket("ws://localhost:9000/connect")
+    val protocol = if (location.protocol == "https:") "wss" else "ws"
+    val sock = new WebSocket(s"$protocol://${location.host}/connect")
     sock.onopen = { ev: Event =>
       sock.send(write(SocketMessage(LoginReq(name))))
     }
