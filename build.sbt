@@ -26,7 +26,10 @@ lazy val server = Project("server", file("server"))
       "com.typesafe.akka" %% "akka-testkit" % "2.3.4" % "test"
     ),
     scalaJSProjects := Seq(client),
-    pipelineStages := Seq(scalaJSProd)
+    pipelineStages := Seq(scalaJSProd),
+    sources in (Compile, doc) := Seq.empty,
+    publishArtifact in (Compile, packageDoc) := false,
+    publishArtifact in packageDoc := false
   )
   .settings(commonSrcDirs: _*)
   .aggregate(client)
