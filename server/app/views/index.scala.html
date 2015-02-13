@@ -4,12 +4,16 @@
 <html>
 <head>
 <title>BotRPG Online</title>
+<link rel="stylesheet" type="text/css" href="/assets/lib/bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="/assets/lib/bootswatch-paper/css/bootstrap.min.css" />
 </head>
 <body ng-app="BotRpg">
-<div ng-view>
+<div ng-view class="container">
 </div>
 <script src="/assets/lib/angularjs/angular.js"></script>
 <script src="/assets/lib/angularjs/angular-route.min.js"></script>
+<script src="/assets/lib/angular-ui-bootstrap/ui-bootstrap.min.js"></script>
+<script src="/assets/lib/angular-ui-bootstrap/ui-bootstrap-tpls.min.js"></script>
 <script src="/assets/@scriptName"></script>
 <script>BotRpg().main()</script>
 </body>

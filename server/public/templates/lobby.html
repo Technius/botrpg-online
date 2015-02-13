@@ -1,13 +1,16 @@
-<div>
-  <ul>
-    <li ng-repeat="player in waiting">
+<div class="panel panel-primary">
+  <div class="panel-heading">Matchmaking</div>
+  <div class="panel-body">
+    <button class="btn btn-primary" ng-show="!requestingGame" ng-click="requestGame()">
+      Request Game
+    </button>
+    <button class="btn btn-danger" ng-show="requestingGame" ng-click="cancelRequestGame()">
+      Cancel Matchmaking
+    </button>
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item" ng-repeat="player in waiting">
       {{player}}
     </li>
   </ul>
-  <button ng-show="!requestingGame" ng-click="requestGame()">
-    Request Game
-  </button>
-  <button ng-show="requestingGame" ng-click="cancelRequestGame()">
-    Cancel Matchmaking
-  </button>
 </div>

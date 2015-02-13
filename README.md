@@ -18,9 +18,10 @@ To do
 =====
 In no particular order:
 * Client
-  * Add Bootstrap for styling
-  * Improve look
   * Create matchmaking page
   * Implement games
+  * Implement game interface
+  * Add ability to bot in a game
 * Server
   * Implement game starting and ending
+  * Implement real login
