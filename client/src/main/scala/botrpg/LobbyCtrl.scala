@@ -19,10 +19,15 @@ trait LobbyScope extends Scope {
   var requestGame: js.Function = js.native
 
   var cancelRequestGame: js.Function = js.native
+
+  var playGame: js.Function = js.native
+
+  var name: String = js.native
 }
 
 class LobbyCtrl(
     $scope: LobbyScope,
+    $game: GameService,
     $connection: Connection) extends Controller {
   $connection.verifyLogin foreach { case (socket, name) =>
     $scope.requestingGame = false
@@ -30,8 +35,8 @@ class LobbyCtrl(
 
     socket.onmessage = { ev: MessageEvent =>
       read[SocketMessage](ev.data.toString).data match {
-        case WaitingPlayers(players) =>
-          $scope.waiting = players.toJSArray
+        case WaitingPlayers(players) => $scope.waiting = players.toJSArray
+        case GameReady(id, game) => $game.startGame(game, id)
         case _ =>
       }
       $scope.$apply()
@@ -46,5 +51,9 @@ class LobbyCtrl(
       socket.send(write(SocketMessage(CancelRequestGame)))
       $scope.requestingGame = false
     }
+    $scope.playGame = { name: String =>
+      socket.send(write(SocketMessage(JoinGame(name))))
+    }
+    $scope.name = name
   }
 }

@@ -1,9 +1,11 @@
 BotRPG Online
 =============
 
-BotRPG Online is a work-in-progress, open source MMORPG built with Scala, Play Framework,
-Akka, and Scala.js. Unlike most MMORPGs, where *players* are supposed to play
-the game, players are supposed to program *bots* to play BotRPG for them.
+BotRPG Online is a work-in-progress, open source MMORPG built with Scala, Play
+Framework, Akka, and Scala.js. Unlike most MMORPGs, where *players* are supposedto play the game, players are supposed to program *bots* to play BotRPG for
+them.
+
+An instance of BotRPG is running on Heroku [here](http://botrpg-online.herokuapp.com).
 
 Running
 =======
@@ -18,10 +20,12 @@ To do
 =====
 In no particular order:
 * Client
-  * Create matchmaking page
-  * Implement games
+  * Add game functionality
+  * Fix login message bug
   * Implement game interface
   * Add ability to bot in a game
 * Server
-  * Implement game starting and ending
+  * Implement game ending
   * Implement real login
+  * Support spectation
+  * Add chat feature

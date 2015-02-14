@@ -1,4 +1,4 @@
-package models
+package botrpg.common
 
 case class Game(turn: Int = 1, p1: (String, Player), p2: (String, Player)) {
 

@@ -1,6 +1,6 @@
 package actors.game
 
-import actors.{ State, Data, GetName }
+import actors.{ State, Data, GetName, InitGame }
 import akka.actor._
 import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
@@ -26,9 +26,6 @@ class GameActor(
 
   val id = UUID.randomUUID()
 
-  p1 ! GameReady(id.toString)
-  p2 ! GameReady(id.toString)
-
   var state: Game = {
     implicit val timeout: Timeout = 5.seconds
     val p1NameFut = ask(p1, GetName).mapTo[String]
@@ -40,6 +37,9 @@ class GameActor(
     Await.result(gameFuture, 5.seconds)
   }
 
+  p1 ! InitGame(self, id.toString, state)
+  p2 ! InitGame(self, id.toString, state)
+
   var playing: Boolean = true
 
   var playerMove: Option[(Player, Move)] = None
@@ -50,19 +50,29 @@ class GameActor(
         val p1move = if (sender() == state.player1) move else existingMove._2
         val p2move = if (p1move == move) existingMove._2 else move
         processTurn(p1move, p2move)
+        p1 ! state
+        p2 ! state
         playerMove = None
       } getOrElse {
         val player = if (sender() == p1) state.player1 else state.player2
         playerMove = Some((player, move))
       }
     case QuitGame(a) if playing =>
-      if (a == p1) {
-        p1 ! Defeat
-        p2 ! Victory
-      } else if (a == p2) {
-        p1 ! Victory
-        p2 ! Defeat
-      }
+      if (a == p1) winGame(p1)
+      else if (a == p2) winGame(p2)
+  }
+
+  def winGame(winner: ActorRef) = if (playing) {
+    playing = false
+    if (winner == p1) {
+      p1 ! Victory
+      p2 ! Defeat
+    } else if(winner == p2) {
+      p1 ! Defeat
+      p2 ! Victory
+    } else {
+      playing = true
+    }
   }
 
   def processTurn(move1: Move, move2: Move) = {
@@ -72,15 +82,8 @@ class GameActor(
       turn = state.turn + 1
     )
 
-    if (result.player1.health <= 0) {
-      p1 ! Defeat
-      p2 ! Victory
-      playing = false
-    } else if (result.player2.health <= 0) {
-      p1 ! Victory
-      p2 ! Defeat
-      playing = false
-    }
+    if (result.player1.health <= 0) winGame(p2)
+    else if (result.player2.health <= 0) winGame(p1)
 
     state = result
   }

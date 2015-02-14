@@ -7,6 +7,7 @@ import models._
 import org.scalatest.{ BeforeAndAfterAll, Matchers, WordSpecLike }
 import scala.concurrent._
 import scala.concurrent.duration._
+import scala.language.reflectiveCalls
 
 class GameSpec(_system: ActorSystem) extends TestKit(_system)
     with WordSpecLike with Matchers with BeforeAndAfterAll {

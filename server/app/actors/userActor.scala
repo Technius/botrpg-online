@@ -45,31 +45,35 @@ class UserActor(
   }
 
   when(WithUser) {
-    case Event(GetWaiting, _) =>
+    case Event(msg, Playing(_, game)) =>
+      game ! msg
+      stay
+    case Event(GetWaiting, _: Matchmaking) =>
       implicit val timeout = Timeout(5.seconds)
       val future = ask(matchmaker, GetWaiting).mapTo[WaitingPlayers]
       future map (msg => write(SocketMessage(msg))) pipeTo out
       stay
-    case Event(w: WaitingPlayers, _) =>
+    case Event(w: WaitingPlayers, _: Matchmaking) =>
       out ! write(SocketMessage(w))
       stay
-    case Event(FindGame, n: Name) =>
+    case Event(FindGame, n: Matchmaking) =>
       matchmaker ! FindGame
       stay using Matchmaking(n.name, true)
-    case Event(CancelRequestGame, n: Name) =>
+    case Event(CancelRequestGame, n: Matchmaking) =>
       matchmaker ! CancelRequestGame
       stay using Matchmaking(n.name, false)
-    case Event(RequestGame, n: Name) =>
+    case Event(RequestGame, n: Matchmaking) =>
       matchmaker ! RequestGame
       stay using Matchmaking(n.name, false)
     case Event(GetName, n: Name) =>
       sender() ! n.name
       stay
-    case Event(InitGame(game), Matchmaking(name, true)) =>
+    case Event(InitGame(game, id, state), Matchmaking(name, _)) =>
+      out ! write(SocketMessage(GameReady(id, state)))
       stay using Playing(name, game)
-    case Event(msg, Playing(_, game)) =>
-      game ! msg
-      stay
+    case Event(j: JoinGame, m: Matchmaking) =>
+      matchmaker ! j
+      stay using Matchmaking(m.name, false)
   }
 
   whenUnhandled {

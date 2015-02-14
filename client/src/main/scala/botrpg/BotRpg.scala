@@ -12,17 +12,20 @@ object BotRpg extends JSApp {
     val module = Angular.module("BotRpg", Seq("ngRoute"))
 
     module.serviceOf[Connection]("$connection")
+    module.serviceOf[GameService]("$game")
     module.controllerOf[NavbarCtrl]("NavbarCtrl")
     module.controllerOf[LoginCtrl]("LoginCtrl")
     module.controllerOf[LobbyCtrl]("LobbyCtrl")
+    module.controllerOf[GameCtrl]("GameCtrl")
 
     module.config { $routeProvider: RouteProvider =>
       $routeProvider
-        .when("/",
-          Route(controller = "LoginCtrl", templateUrl = "/assets/templates/login.html"))
-        .when("/lobby",
-          Route(controller="LobbyCtrl", templateUrl = "/assets/templates/lobby.html"))
-//        .when("/play", Route(controller = "", templateUrl = ""))
+        .when("/", Route(controller = "LoginCtrl",
+          templateUrl = "/assets/templates/login.html"))
+        .when("/lobby", Route(controller = "LobbyCtrl",
+          templateUrl = "/assets/templates/lobby.html"))
+        .when("/game/:gameId", Route(controller = "GameCtrl",
+          templateUrl = "/assets/templates/game.html"))
     }
     
     module.config { $locationProvider: js.Dynamic =>

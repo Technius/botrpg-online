@@ -16,7 +16,7 @@ case object LeaveLobby
 
 case class StartGame(player1: ActorRef, player2: ActorRef)
 
-case class InitGame(game: ActorRef)
+case class InitGame(game: ActorRef, id: String, initialState: Game)
 
 case object GetName
 

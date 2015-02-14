@@ -1,4 +1,4 @@
-package models
+package botrpg.common
 
 trait Move {
   def staminaCost: Int
