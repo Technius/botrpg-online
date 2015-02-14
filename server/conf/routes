@@ -6,9 +6,7 @@
 GET     /connect                    controllers.Connections.socket
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/app.js              controllers.Assets.at(path="/public", file="client-opt.js")
-GET     /assets/app-dev.js          controllers.Assets.at(path="/public", file="client-fastopt.js")
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file)
 
 # Pages
 GET     /                           controllers.Application.serve(ignored="")

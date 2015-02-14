@@ -1,4 +1,4 @@
-@(scriptName: String)
+@()
 @import play.api.Play
 
 <!DOCTYPE HTML>
@@ -34,7 +34,11 @@
 <script src="/assets/lib/angularjs/angular-route.min.js"></script>
 <script src="/assets/lib/angular-ui-bootstrap/ui-bootstrap.min.js"></script>
 <script src="/assets/lib/angular-ui-bootstrap/ui-bootstrap-tpls.min.js"></script>
-<script src="/assets/@scriptName"></script>
+@if(Play.isProd(Play.current)) {
+<script src="@routes.Assets.versioned("client-opt.js")"></script>
+} else {
+<script src="@routes.Assets.versioned("client-fastopt.js")"></script>
+}
 <script>BotRpg().main()</script>
 </body>
 </html>
