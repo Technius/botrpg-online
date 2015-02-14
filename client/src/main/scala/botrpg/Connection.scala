@@ -30,7 +30,14 @@ class Connection($location: Location) extends Service {
     sock
   }
 
-  def verifyLogin = {
+  def logout() = socket foreach { sock =>
+    sock.close(1000, "logout")
+    socket = None
+    _name = None
+    $location.path("/")
+  }
+
+  def verifyLogin() = {
     val opt = for {
       sock <- socket
       _name <- name

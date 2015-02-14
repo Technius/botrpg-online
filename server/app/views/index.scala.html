@@ -10,10 +10,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body ng-app="BotRpg">
-<nav class="navbar navbar-inverse navbar-static-top">
+<nav class="navbar navbar-inverse navbar-static-top" ng-controller="NavbarCtrl">
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand">BotRPG</a>
+    </div>
+    <div class="navbar-right">
+      <div class="container-fluid" ng-show="name()">
+        <p class="navbar-text">Hello, {{name()}}!</p>
+        <button class="btn btn-default navbar-btn" ng-click="logout()">Logout</button>
+      </div>
     </div>
   </div>
 </nav>

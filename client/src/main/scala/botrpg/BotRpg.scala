@@ -12,6 +12,7 @@ object BotRpg extends JSApp {
     val module = Angular.module("BotRpg", Seq("ngRoute"))
 
     module.serviceOf[Connection]("$connection")
+    module.controllerOf[NavbarCtrl]("NavbarCtrl")
     module.controllerOf[LoginCtrl]("LoginCtrl")
     module.controllerOf[LobbyCtrl]("LobbyCtrl")
 
