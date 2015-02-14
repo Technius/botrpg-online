@@ -21,12 +21,14 @@ class LoginCtrl(
   $scope.login = { () =>
     if (!$scope.name.isEmpty) {
       $connection.openConnection($scope.name).onmessage = { ev: MessageEvent =>
-        if (read[SocketMessage](ev.data.toString).data == LoggedIn) {
-          $scope.$apply {
-            $location.path("/lobby")
-          }
-        } else {
-          alert("Oops, failed to log in. Try again.")
+        read[SocketMessage](ev.data.toString).data match {
+          case LoggedIn =>
+            $scope.$apply {
+              $location.path("/lobby")
+            }
+          case msg =>
+            alert("Error: received unknown response: " + msg.toString)
+            alert("Oops, failed to log in. Please try again.")
         }
       }
     }
