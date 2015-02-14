@@ -1,4 +1,5 @@
 @(scriptName: String)
+@import play.api.Play
 
 <!DOCTYPE HTML>
 <html>
@@ -25,7 +26,11 @@
 </nav>
 <div ng-view class="container">
 </div>
+@if(Play.isProd(Play.current)) {
+<script src="/assets/lib/angularjs/angular.min.js"></script>
+} else {
 <script src="/assets/lib/angularjs/angular.js"></script>
+}
 <script src="/assets/lib/angularjs/angular-route.min.js"></script>
 <script src="/assets/lib/angular-ui-bootstrap/ui-bootstrap.min.js"></script>
 <script src="/assets/lib/angular-ui-bootstrap/ui-bootstrap-tpls.min.js"></script>
