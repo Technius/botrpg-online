@@ -20,12 +20,17 @@ To do
 =====
 In no particular order:
 * Client
-  * Add game functionality
   * Fix login message bug
-  * Implement game interface
+  * Fix play button alignment
   * Add ability to bot in a game
+  * Cleanup `GameCtrl` and `GameService`
 * Server
-  * Implement game ending
-  * Implement real login
+  * Cleanup websocket communication
+  * Cleanup `UserActor`: Assume states other than `NoUser` are logged in
+  * Eliminate `SocketMessage` sending boilerplate
+  * Implement a real login system
   * Support spectation
   * Add chat feature
+  * Improve game observer handling
+* Shared Code
+  * Use traits to categorize messages
