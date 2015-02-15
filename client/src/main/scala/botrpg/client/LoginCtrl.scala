@@ -1,12 +1,11 @@
-package botrpg
+package botrpg.client
 
 import biz.enef.angular._
 import biz.enef.angular.core.Location
+import botrpg.common._
 import org.scalajs.dom._
 import scala.scalajs.js
 import upickle._
-
-import common._
 
 trait LoginScope extends Scope {
   var name: String = js.native

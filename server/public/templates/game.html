@@ -1,13 +1,44 @@
-<div class="panel panel-default">
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    {{game.player1.name}} vs {{game.player2.name}}
+  </div>
   <div class="panel-body">
-    TODO: Implement interface
+    <p>Turn {{game.turn}}</p>
+    <hr />
+    <div class="row">
+      <div class="col-xs-12 col-md-6">
+        <p><strong>{{game.player1.name}}</strong></p>
+        <p>Health: {{game.player1.health}}</p>
+        <p>Stamina: {{game.player1.stamina}}</p>
+      </div>
+      <div class="col-xs-12 col-md-6">
+        <p><strong>{{game.player2.name}}</strong></p>
+        <p>Health: {{game.player2.health}}</p>
+        <p>Stamina: {{game.player2.stamina}}</p>
+      </div>
+    </div>
+    <div ng-show="game.result">
+      <hr />
+      <p><strong>{{game.result}}!</strong></p>
+      <p><button ng-click="leaveGame()" class="btn btn-primary">Return to lobby</button></p>
+    </div>
   </div>
 </div>
 
 <div class="panel panel-default">
   <div class="panel-body">
-    This is a game!
-
-    {{game()}}
+    <div ng-show="!madeMove() && !game.result">
+      <button ng-class="{ 'disabled': player().stamina < 10 }" ng-click="moveAttack()" class="btn btn-default">
+        Attack
+      </button>
+      <button ng-click="moveDefend()" class="btn btn-default">
+        Defend
+      </button>
+      <button ng-click="moveWait()" class="btn btn-default">
+        Wait
+      </button>
+    </div>
+    <div ng-show="madeMove() && !game.result">Waiting for other player...</div>
+    <div ng-show="game.result">The game is over, so controls have been disabled.</div>
   </div>
 </div>

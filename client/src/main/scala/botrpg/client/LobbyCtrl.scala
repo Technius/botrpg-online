@@ -1,12 +1,11 @@
-package botrpg
+package botrpg.client
 
 import biz.enef.angular._
+import botrpg.common._
 import org.scalajs.dom._
 import scala.scalajs.js
 import scala.scalajs.js.JSConverters._
 import upickle._
-
-import common._
 
 trait LobbyScope extends Scope {
 
@@ -42,17 +41,17 @@ class LobbyCtrl(
       $scope.$apply()
     }
 
-    $scope.getWaiting = () => socket.send(write(SocketMessage(GetWaiting)))
+    $scope.getWaiting = () => $connection.sendMessage(GetWaiting)
     $scope.requestGame = () => {
-      socket.send(write(SocketMessage(RequestGame)))
+      $connection.sendMessage(RequestGame)
       $scope.requestingGame = true
     }
     $scope.cancelRequestGame = () => {
-      socket.send(write(SocketMessage(CancelRequestGame)))
+      $connection.sendMessage(CancelRequestGame)
       $scope.requestingGame = false
     }
     $scope.playGame = { name: String =>
-      socket.send(write(SocketMessage(JoinGame(name))))
+      $connection.sendMessage(JoinGame(name))
     }
     $scope.name = name
   }

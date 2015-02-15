@@ -1,7 +1,7 @@
 package botrpg.common
 
-trait Move {
-  def staminaCost: Int
+sealed trait Move {
+  def staminaCost: Int = 0
 }
 
 case object Attack extends Move {

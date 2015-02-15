@@ -11,20 +11,14 @@ import play.api.libs.concurrent.Execution.Implicits._
 import scala.concurrent.duration._
 import scala.concurrent.Await
 
-case class QuitGame(p: ActorRef)
-
-case class MakeMove(move: Move)
-
-case object Victory
-
-case object Defeat
-
 class GameActor(
     p1: ActorRef,
     p2: ActorRef,
     matchmaker: ActorRef) extends Actor {
 
   val id = UUID.randomUUID()
+
+  val observers = scala.collection.mutable.ArrayBuffer[ActorRef]()
 
   var state: Game = {
     implicit val timeout: Timeout = 5.seconds
@@ -40,38 +34,51 @@ class GameActor(
   p1 ! InitGame(self, id.toString, state)
   p2 ! InitGame(self, id.toString, state)
 
+  // Temporary
+  observers ++= Seq(p1, p2)
+
   var playing: Boolean = true
 
   var playerMove: Option[(Player, Move)] = None
 
   def receive = {
-    case MakeMove(move) =>
+    case MakeMove(move) if playing =>
       playerMove map { existingMove =>
         val p1move = if (sender() == state.player1) move else existingMove._2
         val p2move = if (p1move == move) existingMove._2 else move
         processTurn(p1move, p2move)
-        p1 ! state
-        p2 ! state
+        p1 ! GameUpdate(state)
+        p2 ! GameUpdate(state)
         playerMove = None
       } getOrElse {
         val player = if (sender() == p1) state.player1 else state.player2
         playerMove = Some((player, move))
       }
-    case QuitGame(a) if playing =>
-      if (a == p1) winGame(p1)
-      else if (a == p2) winGame(p2)
+    case LeaveGame =>
+      val a = sender()
+      if (playing) {
+        if (a == p1) winGame(Some(p1))
+        else if (a == p2) winGame(Some(p2))
+      }
+      observers -= a
+      if (observers.length == 0) self ! PoisonPill
   }
 
-  def winGame(winner: ActorRef) = if (playing) {
+  def winGame(winnerOpt: Option[ActorRef]) = if (playing) {
     playing = false
-    if (winner == p1) {
-      p1 ! Victory
-      p2 ! Defeat
-    } else if(winner == p2) {
-      p1 ! Defeat
-      p2 ! Victory
-    } else {
-      playing = true
+    winnerOpt map { winner =>
+      if (winner == p1) {
+        p1 ! Victory
+        p2 ! Defeat
+      } else if(winner == p2) {
+        p1 ! Defeat
+        p2 ! Victory
+      } else {
+        playing = true
+      }
+    } getOrElse {
+      p1 ! Draw
+      p2 ! Draw
     }
   }
 
@@ -82,8 +89,12 @@ class GameActor(
       turn = state.turn + 1
     )
 
-    if (result.player1.health <= 0) winGame(p2)
-    else if (result.player2.health <= 0) winGame(p1)
+    val p1Lose = result.player1.health <= 0
+    val p2Lose = result.player2.health <= 0
+
+    if (p1Lose && p2Lose) winGame(None)
+    else if (p1Lose) winGame(Some(p2))
+    else if (p2Lose) winGame(Some(p1))
 
     state = result
   }

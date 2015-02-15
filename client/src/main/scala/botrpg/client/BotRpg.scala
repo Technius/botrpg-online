@@ -1,4 +1,4 @@
-package botrpg
+package botrpg.client
 
 import biz.enef.angular._
 import biz.enef.angular.ext.{ Route, RouteProvider }

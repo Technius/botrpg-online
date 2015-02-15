@@ -22,8 +22,13 @@ class ConnectionsActor extends Actor {
     case StartGame(p1, p2) =>
       val game = context.actorOf(GameActor.props(p1, p2, matchmaker))
       games += game
-    case Terminated(user) =>
-      connected -= user
-      matchmaker ! Disconnect(user)
+      context.watch(game)
+    case Terminated(a) =>
+      if (connected.contains(a)) {
+        connected -= a
+        matchmaker ! Disconnect(a)
+      } else if(games.contains(a)) {
+        games -= a
+      }
   }
 }

@@ -30,7 +30,13 @@ class UserActor(
   val matchmaker = context.actorSelection("/user/system/matchmaker")
 
   override def receive = {
-    case msg: String => super.receive(read[SocketMessage](msg).data)
+    case msg: String =>
+      val readOpt = try {
+        Some(read[SocketMessage](msg).data)
+      } catch {
+        case _: upickle.Invalid => None
+      }
+      readOpt foreach (super.receive(_))
     case msg => super.receive(msg)
   }
 
@@ -45,13 +51,18 @@ class UserActor(
   }
 
   when(WithUser) {
+    case Event(state: GameUpdate, _: Playing) =>
+      out ! write(SocketMessage(state))
+      stay
+    case Event(result: MatchResult, _: Playing) =>
+      out ! write(SocketMessage(result))
+      stay
+    case Event(LeaveGame, Playing(name, game)) =>
+      game ! LeaveGame
+      matchmaker ! JoinLobby
+      stay using Matchmaking(name, false)
     case Event(msg, Playing(_, game)) =>
       game ! msg
-      stay
-    case Event(GetWaiting, _: Matchmaking) =>
-      implicit val timeout = Timeout(5.seconds)
-      val future = ask(matchmaker, GetWaiting).mapTo[WaitingPlayers]
-      future map (msg => write(SocketMessage(msg))) pipeTo out
       stay
     case Event(w: WaitingPlayers, _: Matchmaking) =>
       out ! write(SocketMessage(w))
