@@ -44,7 +44,7 @@ class UserActor(
 
   when(NoUser) {
     case Event(LoginReq(name), NoData) =>
-      out ! write(SocketMessage(LoggedIn))
+      sendMessage(LoggedIn)
       connections ! Connect
       matchmaker ! JoinLobby
       goto(WithUser) using Matchmaking(name, false)
@@ -52,10 +52,10 @@ class UserActor(
 
   when(WithUser) {
     case Event(state: GameUpdate, _: Playing) =>
-      out ! write(SocketMessage(state))
+      sendMessage(state)
       stay
     case Event(result: MatchResult, _: Playing) =>
-      out ! write(SocketMessage(result))
+      sendMessage(result)
       stay
     case Event(LeaveGame, Playing(name, game)) =>
       game ! LeaveGame
@@ -65,7 +65,7 @@ class UserActor(
       game ! msg
       stay
     case Event(w: WaitingPlayers, _: Matchmaking) =>
-      out ! write(SocketMessage(w))
+      sendMessage(w)
       stay
     case Event(FindGame, n: Matchmaking) =>
       matchmaker ! FindGame
@@ -80,7 +80,7 @@ class UserActor(
       sender() ! n.name
       stay
     case Event(InitGame(game, id, state), Matchmaking(name, _)) =>
-      out ! write(SocketMessage(GameReady(id, state)))
+      sendMessage(GameReady(id, state))
       stay using Playing(name, game)
     case Event(j: JoinGame, m: Matchmaking) =>
       matchmaker ! j
@@ -93,6 +93,8 @@ class UserActor(
   }
 
   initialize()
+
+  def sendMessage(msg: Message) = out ! write(SocketMessage(msg))
 }
 
 object UserActor {

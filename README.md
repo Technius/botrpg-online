@@ -21,16 +21,19 @@ To do
 In no particular order:
 * Client
   * Fix login message bug
-  * Fix play button alignment
+  * Fix lobby's play button alignment
   * Add ability to bot in a game
+  * Add a navigation menu, possibly offcanvas
   * Cleanup `GameCtrl` and `GameService`
 * Server
+  * Properly handle players who leave in the midddle of a game
   * Cleanup websocket communication
-  * Cleanup `UserActor`: Assume states other than `NoUser` are logged in
-  * Eliminate `SocketMessage` sending boilerplate
-  * Implement a real login system
+  * Refactor `UserActor` into another package
+  * Divide `UserActor` into actors for inbound, outbound, and internal
   * Support spectation
   * Add chat feature
   * Improve game observer handling
+  * Implement a real login system
 * Shared Code
   * Use traits to categorize messages
+  * Move game logic from server to shared code for possible 'ai sandboxing'
