@@ -1,6 +1,7 @@
 package controllers
 
 import actors._
+import actors.user.UserActor
 import akka.actor.Props
 import botrpg.common.SocketMessage
 import play.api.Play.current

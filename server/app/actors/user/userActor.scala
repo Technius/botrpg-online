@@ -1,5 +1,6 @@
-package actors
+package actors.user
 
+import actors._
 import akka.actor._
 import akka.pattern.{ ask, pipe }
 import akka.util.Timeout

@@ -26,7 +26,6 @@ In no particular order:
 * Server
   * Properly handle players who leave in the midddle of a game
   * Cleanup websocket communication
-  * Refactor `UserActor` into another package
   * Divide `UserActor` into actors for inbound, outbound, and internal
   * Support spectation
   * Add chat feature

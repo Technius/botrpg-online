@@ -1,5 +1,6 @@
 import actors._
 import actors.game._
+import actors.user._
 import akka.actor._
 import akka.testkit._
 import botrpg.common._
