@@ -1,6 +1,8 @@
 BotRPG Online
 =============
 
+[![Join the chat at https://gitter.im/Technius/botrpg-online](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Technius/botrpg-online?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 BotRPG Online is a work-in-progress, open source MMORPG built with Scala, Play
 Framework, Akka, and Scala.js. Unlike most MMORPGs, where *players* are supposedto play the game, players are supposed to program *bots* to play BotRPG for
 them.
