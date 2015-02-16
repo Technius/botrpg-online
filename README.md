@@ -20,7 +20,6 @@ To do
 =====
 In no particular order:
 * Client
-  * Fix login message bug
   * Add ability to bot in a game
   * Add a navigation menu, possibly offcanvas
   * Cleanup `GameCtrl` and `GameService`
@@ -35,4 +34,4 @@ In no particular order:
   * Implement a real login system
 * Shared Code
   * Use traits to categorize messages
-  * Move game logic from server to shared code for possible 'ai sandboxing'
+  * Move game logic from server to shared code for possible 'AI sandboxing'

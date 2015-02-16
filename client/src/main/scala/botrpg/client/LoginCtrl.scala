@@ -22,12 +22,10 @@ class LoginCtrl(
       $connection.openConnection($scope.name).onmessage = { ev: MessageEvent =>
         read[SocketMessage](ev.data.toString).data match {
           case LoggedIn =>
-            $scope.$apply {
-              $location.path("/lobby")
-            }
+            $location.path("/lobby")
+            $scope.$apply()
           case msg =>
             alert("Error: received unknown response: " + msg.toString)
-            alert("Oops, failed to log in. Please try again.")
         }
       }
     }
