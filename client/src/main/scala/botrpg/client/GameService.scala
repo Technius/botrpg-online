@@ -17,15 +17,17 @@ class GameService(
   def game = _game
 
   def playerData = _game flatMap { g =>
-    $connection.name flatMap { name =>
-      if (name == g.player1.name) Some(g.player1)
-      else if (name == g.player2.name) Some(g.player2)
-      else None
-    }
+    whichPlayer(g) map (if (_) g.player1 else g.player2)
+  }
+
+  def whichPlayer(g: GameState) = $connection.name flatMap { name =>
+    if (name == g.player1.name) Some(true)
+    else if (name == g.player2.name) Some(false)
+    else None
   }
 
   def startGame(game: Game, id: String) = {
-    updateState(game)
+    _game = Some(new GameState(game, None))
     $location.path(s"/game/$id")
     madeMove = false
   }
@@ -39,8 +41,14 @@ class GameService(
     case GameUpdate(state) =>
       updateState(state)
       madeMove = false
-    case result: MatchResult =>
-      _game = _game map (state => new GameState(state.game, Some(result)))
+    case result: GameEnd =>
+      _game = _game map { state =>
+        val localResult = whichPlayer(state) map { p1OrP2 =>
+          if (p1OrP2) result.p1Result
+          else result.p2Result
+        }
+        new GameState(state.game, localResult)
+      }
     case msg => println("Unrecognized message: " + msg)
   }
 

@@ -25,14 +25,15 @@ In no particular order:
   * Add ability to bot in a game
   * Add a navigation menu, possibly offcanvas
   * Cleanup `GameCtrl` and `GameService`
+  * Always put data of self on the left in battles
 * Server
-  * Properly handle players who leave in the midddle of a game
   * Cleanup websocket communication
   * Divide `UserActor` into actors for inbound, outbound, and internal
   * Support spectation
   * Add chat feature
-  * Improve game observer handling
+  * Improve game observer handling by generalizing messages
   * Implement a real login system
 * Shared Code
   * Use traits to categorize messages
   * Move game logic from server to shared code for possible 'AI sandboxing'
+    on client

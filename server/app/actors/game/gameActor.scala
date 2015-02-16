@@ -11,12 +11,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 import scala.concurrent.duration._
 import scala.concurrent.Await
 
-class GameActor(
-    p1: ActorRef,
-    p2: ActorRef,
-    matchmaker: ActorRef) extends Actor {
-
-  val id = UUID.randomUUID()
+class GameActor(id: UUID, p1: ActorRef, p2: ActorRef) extends Actor {
 
   val observers = scala.collection.mutable.ArrayBuffer[ActorRef]()
 
@@ -47,8 +42,7 @@ class GameActor(
         val p1move = if (sender() == state.player1) move else existingMove._2
         val p2move = if (p1move == move) existingMove._2 else move
         processTurn(p1move, p2move)
-        p1 ! GameUpdate(state)
-        p2 ! GameUpdate(state)
+        observers foreach (_ ! GameUpdate(state))
         playerMove = None
       } getOrElse {
         val player = if (sender() == p1) state.player1 else state.player2
@@ -56,30 +50,26 @@ class GameActor(
       }
     case LeaveGame =>
       val a = sender()
-      if (playing) {
-        if (a == p1) winGame(Some(p1))
-        else if (a == p2) winGame(Some(p2))
-      }
       observers -= a
-      if (observers.length == 0) self ! PoisonPill
+      if (playing) {
+        if (a == p1) winGame(Some(p2))
+        else if (a == p2) winGame(Some(p1))
+      }
+      if (observers.length == 0) {
+        self ! PoisonPill
+      }
   }
 
   def winGame(winnerOpt: Option[ActorRef]) = if (playing) {
+    val result: GameEnd = winnerOpt map { winner =>
+      val p1Win = winner == p1
+      val p2Win = winner == p2
+      require(p1Win || p2Win)
+      if (p1Win) GameEnd(Victory, Defeat)
+      else GameEnd(Defeat, Victory)
+    } getOrElse GameEnd(Draw, Draw)
+    observers foreach (_ ! result)
     playing = false
-    winnerOpt map { winner =>
-      if (winner == p1) {
-        p1 ! Victory
-        p2 ! Defeat
-      } else if(winner == p2) {
-        p1 ! Defeat
-        p2 ! Victory
-      } else {
-        playing = true
-      }
-    } getOrElse {
-      p1 ! Draw
-      p2 ! Draw
-    }
   }
 
   def processTurn(move1: Move, move2: Move) = {
@@ -92,11 +82,11 @@ class GameActor(
     val p1Lose = result.player1.health <= 0
     val p2Lose = result.player2.health <= 0
 
+    state = result
+
     if (p1Lose && p2Lose) winGame(None)
     else if (p1Lose) winGame(Some(p2))
     else if (p2Lose) winGame(Some(p1))
-
-    state = result
   }
 
   private[this] def resolveTurn(
@@ -118,6 +108,6 @@ class GameActor(
 }
 
 object GameActor {
-  def props(p1: ActorRef, p2: ActorRef, matchmaker: ActorRef) =
-    Props(new GameActor(p1, p2, matchmaker))
+  def props(id: UUID, p1: ActorRef, p2: ActorRef) =
+    Props(new GameActor(id, p1, p2))
 }

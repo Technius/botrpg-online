@@ -63,7 +63,7 @@ class MatchmakerActor extends Actor {
       }
     case msg @ StartGame(p1, p2) =>
       leave(Seq(p1, p2))
-      context.actorSelection("..") ! msg
+      context.actorSelection("../games") ! msg
   }
 
   def leave(users: Seq[ActorRef]) = {

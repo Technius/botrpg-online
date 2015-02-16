@@ -4,6 +4,7 @@ import actors.user._
 import akka.actor._
 import akka.testkit._
 import botrpg.common._
+import java.util.UUID
 import models._
 import org.scalatest.{ BeforeAndAfterAll, Matchers, WordSpecLike }
 import scala.concurrent._
@@ -24,7 +25,7 @@ class GameSpec(_system: ActorSystem) extends TestKit(_system)
       new UserActor(p.ref, matchProbe.ref)))
     player1.setState(WithUser, Matchmaking("player1", false)) //workaround
     player2.setState(WithUser, Matchmaking("player2", false))
-    val game = TestActorRef(new GameActor(player1, player2, matchProbe.ref))
+    val game = TestActorRef(new GameActor(UUID.randomUUID(), player1, player2))
     val originalState = game.underlyingActor.state.copy()
     player1.setState(stateData = Playing("player1", game))
     player2.setState(stateData = Playing("player2", game))
@@ -46,7 +47,7 @@ class GameSpec(_system: ActorSystem) extends TestKit(_system)
     }
 
     "end when player1 loses all health" in {
-      gameActor.state = gameActor.state.copy(
+      gameActor.state = f.originalState.copy(
         p1 = (gameActor.state.p1._1, Player(0, 0))
       )
       gameActor.processTurn(Wait, Wait)
@@ -54,10 +55,16 @@ class GameSpec(_system: ActorSystem) extends TestKit(_system)
     }
 
     "end when player2 loses all health" in {
-      gameActor.state = gameActor.state.copy(
+      gameActor.state = f.originalState.copy(
         p2 = (gameActor.state.p2._1, Player(0, 0))
       )
       gameActor.processTurn(Wait, Wait)
+      gameActor.playing shouldBe false
+    }
+
+    "end when a player disconnects" in {
+      gameActor.state = f.originalState
+      f.game ! Disconnect(f.player1)
       gameActor.playing shouldBe false
     }
   }

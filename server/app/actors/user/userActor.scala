@@ -55,7 +55,7 @@ class UserActor(
     case Event(state: GameUpdate, _: Playing) =>
       sendMessage(state)
       stay
-    case Event(result: MatchResult, _: Playing) =>
+    case Event(result: GameEnd, _: Playing) =>
       sendMessage(result)
       stay
     case Event(LeaveGame, Playing(name, game)) =>
