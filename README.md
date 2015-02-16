@@ -21,7 +21,6 @@ To do
 In no particular order:
 * Client
   * Fix login message bug
-  * Fix lobby's play button alignment
   * Add ability to bot in a game
   * Add a navigation menu, possibly offcanvas
   * Cleanup `GameCtrl` and `GameService`

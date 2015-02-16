@@ -9,7 +9,7 @@
     </button>
   </div>
   <ul class="list-group">
-    <li class="list-group-item" ng-repeat="player in waiting">
+    <li class="list-group-item clearfix" ng-repeat="player in waiting">
       {{player}}
       <button class="btn btn-primary pull-right" ng-show="name != player" ng-click="playGame(player)">Play</button>
     </li>
