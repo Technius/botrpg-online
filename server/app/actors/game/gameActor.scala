@@ -73,9 +73,11 @@ class GameActor(id: UUID, p1: ActorRef, p2: ActorRef) extends Actor {
   }
 
   def processTurn(move1: Move, move2: Move) = {
+    val p1Result = Turn.resolve(state.player1, move1, move2)
+    val p2Result = Turn.resolve(state.player2, move2, move1)
     val result = state.copy(
-      p1 = (state.p1._1, resolveTurn(state.player1, move1, move2)),
-      p2 = (state.p2._1, resolveTurn(state.player2, move2, move1)),
+      p1 = (state.p1._1, p1Result),
+      p2 = (state.p2._1, p2Result),
       turn = state.turn + 1
     )
 
@@ -87,23 +89,6 @@ class GameActor(id: UUID, p1: ActorRef, p2: ActorRef) extends Actor {
     if (p1Lose && p2Lose) winGame(None)
     else if (p1Lose) winGame(Some(p2))
     else if (p2Lose) winGame(Some(p1))
-  }
-
-  private[this] def resolveTurn(
-      player: Player,
-      selfMove: Move,
-      otherMove: Move) = {
-    val stamina = player.stamina - selfMove.staminaCost
-    val health = player.health - ((selfMove, otherMove) match {
-      case (Defend, Attack) => 0
-      case (_, Attack) => 20
-      case _ => 0
-    })
-
-    player.copy(
-      health = math.max(0, health),
-      stamina = math.min(100, math.max(0, stamina))
-    )
   }
 }
 
