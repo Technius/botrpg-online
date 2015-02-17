@@ -26,6 +26,7 @@ In no particular order:
   * Add a navigation menu, possibly offcanvas
   * Cleanup `GameCtrl` and `GameService`
   * Always put data of self on the left in battles
+  * Implement logging of actions in a game
 * Server
   * Cleanup websocket communication
   * Divide `UserActor` into actors for inbound, outbound, and internal
