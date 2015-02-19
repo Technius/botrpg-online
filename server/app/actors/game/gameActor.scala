@@ -42,7 +42,7 @@ class GameActor(id: UUID, p1: ActorRef, p2: ActorRef) extends Actor {
         val p1move = if (sender() == state.player1) move else existingMove._2
         val p2move = if (p1move == move) existingMove._2 else move
         processTurn(p1move, p2move)
-        observers foreach (_ ! GameUpdate(state))
+        observers foreach (_ ! GameUpdate(state, (p1move, p2move)))
         playerMove = None
       } getOrElse {
         val player = if (sender() == p1) state.player1 else state.player2

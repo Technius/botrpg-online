@@ -26,6 +26,17 @@
 </div>
 
 <div class="panel panel-default">
+  <div class="panel-heading">
+    Log
+  </div>
+  <ul class="list-group">
+    <li ng-repeat="msg in log track by $index" class="list-group-item">
+      {{msg}}
+    </li>
+  </ul>
+</div>
+
+<div class="panel panel-default">
   <div class="panel-body">
     <div ng-show="!madeMove() && !game.result">
       <button ng-class="{ 'disabled': player().stamina < 10 }" ng-click="moveAttack()" class="btn btn-default">

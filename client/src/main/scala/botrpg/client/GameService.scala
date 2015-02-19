@@ -12,6 +12,8 @@ class GameService(
 
   private[this] var _game: Option[GameState] = None
 
+  val gameLog = scala.collection.mutable.ArrayBuffer[String]()
+
   var madeMove: Boolean = false
 
   def game = _game
@@ -28,6 +30,7 @@ class GameService(
 
   def startGame(game: Game, id: String) = {
     _game = Some(new GameState(game, None))
+    gameLog.clear()
     $location.path(s"/game/$id")
     madeMove = false
   }
@@ -38,8 +41,19 @@ class GameService(
   }
 
   def processMessage(m: Message) = m match {
-    case GameUpdate(state) =>
-      updateState(state)
+    case GameUpdate(state, (p1Move, p2Move)) =>
+      val newState = updateState(state)
+      whichPlayer(newState) map { p1OrP2 =>
+        val serverPlayers = (state.p1, state.p2)
+        val (selfP, otherP) = if (p1OrP2) serverPlayers else serverPlayers.swap
+        val otherName = otherP._1
+        val (selfMove, otherMove) = if (p1OrP2) {
+          (p1Move, p2Move)
+        } else {
+          (p2Move, p1Move)
+        }
+        gameLog ++= Turn.log("You", otherName, selfMove, otherMove)
+      }
       madeMove = false
     case result: GameEnd =>
       _game = _game map { state =>
@@ -53,6 +67,8 @@ class GameService(
   }
 
   def updateState(state: Game) = {
-    _game = Some(new GameState(state, _game flatMap(_.result)))
+    val newState = new GameState(state, _game flatMap(_.result))
+    _game = Some(newState)
+    newState
   }
 }

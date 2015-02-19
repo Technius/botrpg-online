@@ -18,7 +18,7 @@ case object LoggedIn extends Message
 
 case class GameReady(id: String, game: Game) extends Message
 
-case class GameUpdate(game: Game) extends Message
+case class GameUpdate(game: Game, moves: (Move, Move)) extends Message
 
 case class WaitingPlayers(waiting: List[String]) extends Message
 

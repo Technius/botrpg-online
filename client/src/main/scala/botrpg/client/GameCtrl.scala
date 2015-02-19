@@ -5,11 +5,14 @@ import biz.enef.angular.core.Location
 import botrpg.common._
 import org.scalajs.dom._
 import scala.scalajs.js
+import scala.scalajs.js.JSConverters._
 import upickle._
 
 trait GameScope extends Scope {
 
   var game: GameState = js.native
+
+  var log: js.Array[String] = js.native
 
   var player: js.Function = js.native
   
@@ -32,6 +35,8 @@ class GameCtrl(
     $connection: Connection,
     $game: GameService) extends Controller {
 
+  $scope.log = js.Array()
+
   $connection.verifyLogin() map { case (socket, name) =>
     $game.game map { game =>
       $scope.game = game
@@ -39,6 +44,9 @@ class GameCtrl(
       socket.onmessage = { ev: MessageEvent =>
         $game.processMessage(read[SocketMessage](ev.data.toString).data)
         $scope.game = $game.game getOrElse $scope.game
+        if ($scope.log.length != $game.gameLog.length) {
+          $scope.log = $game.gameLog.toSeq.toJSArray
+        }
         $scope.$apply()
       }
     } getOrElse {
