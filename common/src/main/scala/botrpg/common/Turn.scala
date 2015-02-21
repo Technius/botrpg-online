@@ -53,17 +53,18 @@ object Turn {
   val moveConflicts = Seq(Attack -> Defend)
 
   def log(
-      selfName: String,
-      otherName: String,
-      selfMove: Move,
-      otherMove: Move): Seq[String] = {
-    val moveTup = (selfMove, otherMove)
+      p1Name: String,
+      p2Name: String,
+      p1Move: Move,
+      p2Move: Move,
+      fromSelf: Boolean = true): Seq[String] = {
+    val moveTup = (p1Move, p2Move)
     val moveSeq = Seq(moveTup, moveTup.swap)
-    val selfMsgFmt = moveMessage(selfMove, otherMove)
-    val otherMsgFmt = moveMessage(otherMove, selfMove)
-    val selfMsg = formatMessage(selfMsgFmt, selfName, otherName, true)
-    val otherMsg = formatMessage(otherMsgFmt, otherName, selfName, false)
-    if (moveConflicts.intersect(moveSeq).length > 0) Seq(selfMsg)
-    else Seq(selfMsg, otherMsg)
+    val p1MsgFmt = moveMessage(p1Move, p2Move)
+    val p2MsgFmt = moveMessage(p2Move, p1Move)
+    val p1Msg = formatMessage(p1MsgFmt, p1Name, p2Name, fromSelf)
+    val p2Msg = formatMessage(p2MsgFmt, p2Name, p1Name, false)
+    if (moveConflicts.intersect(moveSeq).length > 0) Seq(p1Msg)
+    else Seq(p1Msg, p2Msg)
   }
 }
