@@ -34,6 +34,8 @@ case object CancelRequestGame extends Message
  
 case object RequestGame extends Message 
 
+case class WatchGame(name: String) extends Message
+
 case class JoinGame(name: String) extends Message
 
 case object FindGame extends Message 

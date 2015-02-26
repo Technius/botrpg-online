@@ -18,6 +18,10 @@ case class StartGame(player1: ActorRef, player2: ActorRef)
 
 case class InitGame(game: ActorRef, id: String, initialState: Game)
 
+case class GameStatus(playing: Boolean, state: Game)
+
+case object GetGameStatus
+
 case object GetName
 
 trait State

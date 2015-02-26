@@ -43,7 +43,7 @@ class GameService(
   def processMessage(m: Message) = m match {
     case GameUpdate(state, (p1Move, p2Move)) =>
       val newState = updateState(state)
-      whichPlayer(newState) map { p1OrP2 =>
+      val logs = whichPlayer(newState) map { p1OrP2 =>
         val serverPlayers = (state.p1, state.p2)
         val (selfP, otherP) = if (p1OrP2) serverPlayers else serverPlayers.swap
         val otherName = otherP._1
@@ -52,16 +52,19 @@ class GameService(
         } else {
           (p2Move, p1Move)
         }
-        gameLog ++= Turn.log("You", otherName, selfMove, otherMove)
+        Turn.log("You", otherName, selfMove, otherMove)
+      } getOrElse {
+        Turn.log(state.p1._1, state.p2._1, p1Move, p2Move, false)
       }
+      gameLog ++= logs
       madeMove = false
     case result: GameEnd =>
       _game = _game map { state =>
         val localResult = whichPlayer(state) map { p1OrP2 =>
           if (p1OrP2) result.p1Result
           else result.p2Result
-        }
-        new GameState(state.game, localResult)
+        } getOrElse result.p1Result
+        new GameState(state.game, Some(localResult))
       }
     case msg => println("Unrecognized message: " + msg)
   }

@@ -1,6 +1,6 @@
 package actors.game
 
-import actors.{ State, Data, GetName, InitGame }
+import actors.{ State, Data, GameStatus, GetGameStatus, GetName, InitGame }
 import akka.actor._
 import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
@@ -34,20 +34,30 @@ class GameActor(id: UUID, p1: ActorRef, p2: ActorRef) extends Actor {
 
   var playing: Boolean = true
 
-  var playerMove: Option[(Player, Move)] = None
+  var playerMove: Option[(ActorRef, Move)] = None
 
   def receive = {
     case MakeMove(move) if playing =>
-      playerMove map { existingMove =>
-        val p1move = if (sender() == state.player1) move else existingMove._2
-        val p2move = if (p1move == move) existingMove._2 else move
-        processTurn(p1move, p2move)
-        observers foreach (_ ! GameUpdate(state, (p1move, p2move)))
-        playerMove = None
-      } getOrElse {
-        val player = if (sender() == p1) state.player1 else state.player2
-        playerMove = Some((player, move))
+      val senderActor = sender()
+      val isP1 = senderActor == p1
+      val isP2 = senderActor == p2
+      if (isP1 || isP2) {
+        playerMove map { existingMove =>
+          if (existingMove._1 != senderActor) {
+            val moves = (move, existingMove._2)
+            val (p1move, p2move) = if (isP1) moves else moves.swap
+            processTurn(p1move, p2move)
+            observers foreach (_ ! GameUpdate(state, (p1move, p2move)))
+            playerMove = None
+          }
+        } getOrElse {
+          playerMove = Some(senderActor -> move)
+        }
       }
+    case GetGameStatus =>
+      sender() ! GameStatus(playing, state)
+    case WatchGame(_) =>
+      if (playing) observers += sender()
     case LeaveGame =>
       val a = sender()
       observers -= a
