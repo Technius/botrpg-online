@@ -90,6 +90,11 @@ class GameSpec(_system: ActorSystem) extends TestKit(_system)
     f.reset()
 
     "defending" should {
+      "lose stamina" in {
+        val original = gameActor.state.player1.stamina
+        gameActor.processTurn(Defend, Wait)
+        gameActor.state.player1.stamina should not be original
+      }
       "negate attacks" in {
         val original = gameActor.state.player2.health
         gameActor.processTurn(Attack, Defend)
@@ -100,7 +105,7 @@ class GameSpec(_system: ActorSystem) extends TestKit(_system)
     "waiting" should {
       "regain stamina" in {
         val original = gameActor.state.player2.stamina
-        gameActor.processTurn(Attack, Defend)
+        gameActor.processTurn(Wait, Wait)
         gameActor.state.player2.stamina should be > original
       }
     }

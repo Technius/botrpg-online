@@ -9,7 +9,7 @@ case object Attack extends Move {
 }
 
 case object Defend extends Move {
-  override val staminaCost = -5
+  override val staminaCost = 5
 }
 
 case object Wait extends Move {
