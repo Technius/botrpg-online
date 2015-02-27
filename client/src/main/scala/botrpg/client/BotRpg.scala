@@ -6,6 +6,8 @@ import scala.scalajs.js
 import scala.scalajs.js.JSApp
 import scala.scalajs.js.annotation.JSExport
 
+import directive._
+
 @JSExport("BotRpg")
 object BotRpg extends JSApp {
   def main(): Unit = {
@@ -17,6 +19,8 @@ object BotRpg extends JSApp {
     module.controllerOf[LoginCtrl]("LoginCtrl")
     module.controllerOf[LobbyCtrl]("LobbyCtrl")
     module.controllerOf[GameCtrl]("GameCtrl")
+
+    // module.directiveOf[AutoScrollBottomDirective]("scrollToBottom")
 
     module.config { $routeProvider: RouteProvider =>
       $routeProvider

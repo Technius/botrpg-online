@@ -1,0 +1,4 @@
+.game-log {
+	max-height: 40vh;
+	overflow-y: auto;
+}

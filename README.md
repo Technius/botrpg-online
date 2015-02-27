@@ -27,7 +27,7 @@ In no particular order:
   * Add a navigation menu, possibly offcanvas
   * Cleanup `GameCtrl` and `GameService`
   * Always put data of self on the left/top in battles
-  * Constrain action log to a size and autoscroll to latest
+  * Implement autoscroll to latest for action log
   * Implement game spectation
 * Server
   * Cleanup websocket communication
