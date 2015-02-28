@@ -20,7 +20,7 @@ object BotRpg extends JSApp {
     module.controllerOf[LobbyCtrl]("LobbyCtrl")
     module.controllerOf[GameCtrl]("GameCtrl")
 
-    // module.directiveOf[AutoScrollBottomDirective]("scrollToBottom")
+    module.directiveOf[AutoScrollBottomDirective]("scrollToBottom")
 
     module.config { $routeProvider: RouteProvider =>
       $routeProvider
