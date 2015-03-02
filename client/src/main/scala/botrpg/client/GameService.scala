@@ -44,17 +44,16 @@ class GameService(
     case GameUpdate(state, (p1Move, p2Move)) =>
       val newState = updateState(state)
       val logs = whichPlayer(newState) map { p1OrP2 =>
-        val serverPlayers = (state.p1, state.p2)
+        val serverPlayers = (state.player1, state.player2)
         val (selfP, otherP) = if (p1OrP2) serverPlayers else serverPlayers.swap
-        val otherName = otherP._1
         val (selfMove, otherMove) = if (p1OrP2) {
           (p1Move, p2Move)
         } else {
           (p2Move, p1Move)
         }
-        Turn.log("You", otherName, selfMove, otherMove)
+        Turn.log("You", otherP.name, selfMove, otherMove)
       } getOrElse {
-        Turn.log(state.p1._1, state.p2._1, p1Move, p2Move, false)
+        Turn.log(state.player1.name, state.player2.name, p1Move, p2Move, false)
       }
       gameLog ++= logs
       madeMove = false

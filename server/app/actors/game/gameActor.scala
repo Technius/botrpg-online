@@ -22,7 +22,10 @@ class GameActor(id: UUID, p1: ActorRef, p2: ActorRef) extends Actor {
     val gameFuture = for {
       p1Name <- p1NameFut
       p2Name <- p2NameFut
-    } yield Game(p1 = (p1Name, Player(100, 50)), p2 = (p2Name, Player(100, 50)))
+    } yield Game(
+      player1 = Player(p1Name, 100, 50),
+      player2 = Player(p2Name, 100, 50)
+    )
     Await.result(gameFuture, 5.seconds)
   }
 
@@ -86,8 +89,8 @@ class GameActor(id: UUID, p1: ActorRef, p2: ActorRef) extends Actor {
     val p1Result = Turn.resolve(state.player1, move1, move2)
     val p2Result = Turn.resolve(state.player2, move2, move1)
     val result = state.copy(
-      p1 = (state.p1._1, p1Result),
-      p2 = (state.p2._1, p2Result),
+      player1 = p1Result,
+      player2 = p2Result,
       turn = state.turn + 1
     )
 
