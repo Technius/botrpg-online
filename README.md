@@ -27,13 +27,15 @@ In no particular order:
   * Add a navigation menu, possibly offcanvas
   * Cleanup `GameCtrl` and `GameService`
   * Always put data of self on the left/top in battles
-  * Implement autoscroll to latest for action log
+  * Find way to detect if user changes scroll to bottom in action autoscroll
   * Implement game spectation
+  * Add progress indicators
 * Server
   * Cleanup websocket communication
   * Divide `UserActor` into actors for inbound, outbound, and internal
   * Add chat feature
   * Implement a real login system
+  * Automatically force a draw if turn exceeds a certain number (30?)
 * Shared Code
   * Use traits to categorize messages
   * Move game logic from server to shared code for possible 'AI sandboxing'
