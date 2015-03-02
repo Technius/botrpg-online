@@ -23,6 +23,7 @@ lazy val server = Project("server", file("server"))
       "org.webjars" % "bootstrap" % "3.3.2",
       "org.webjars" % "bootswatch-paper" % "3.3.1+2",
       "com.lihaoyi" %% "upickle" % "0.2.6",
+      "org.scala-js" %% "scalajs-stubs" % "0.6.0",
       cache,
       ws,
       "org.scalatest" %% "scalatest" % "2.2.1" % "test",
