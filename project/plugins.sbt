@@ -8,7 +8,7 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "0.8.0")
 
 // web plugins
 
-addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.0")
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.1")
 
 addSbtPlugin("com.vmunier" % "sbt-play-scalajs" % "0.2.0")
 
