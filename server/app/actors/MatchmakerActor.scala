@@ -6,26 +6,22 @@ import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
 import botrpg.common._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.Set
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.{ Random, Success }
 
 class MatchmakerActor extends Actor {
   val random = new Random
-  val pending = ArrayBuffer[ActorRef]()
-  val lobby = ArrayBuffer[ActorRef]()
+  val pending = Set[ActorRef]()
+  val lobby = Set[ActorRef]()
 
   def receive = {
     case JoinLobby =>
-      val user = sender()
-      if (!lobby.contains(user)) {
-        lobby += user
-        sendRequestUpdate()
-      }
+      lobby += sender()
+      sendRequestUpdate()
     case LeaveLobby => leave(Seq(sender()))
-    case Disconnect(user) =>
-      self tell (LeaveLobby, user)
+    case Disconnect(user) => self tell (LeaveLobby, user)
     case GetWaiting =>
       val originalSender = sender()
       pendingNames map (WaitingPlayers(_)) pipeTo originalSender
@@ -34,15 +30,14 @@ class MatchmakerActor extends Actor {
       sendRequestUpdate()
     case RequestGame =>
       val user = sender()
-      if (!pending.contains(user)) {
-        pending += user
-        val nameFut = pendingNames map (WaitingPlayers(_))
-        lobby.toList foreach (nameFut pipeTo _)
-      }
+      pending += user
+      val nameFut = pendingNames map (WaitingPlayers(_))
+      lobby.toVector foreach (nameFut pipeTo _)
     case FindGame =>
-      if (pending.length > 0) {
-        val index = random.nextInt(pending.length)
-        val matched = pending(index)
+      val choices = pending.toVector
+      if (choices.length > 0) {
+        val index = random.nextInt(choices.length)
+        val matched = choices(index)
         self ! StartGame(sender(), matched)
       } else {
         context.system.scheduler.scheduleOnce(5.seconds) {
@@ -52,7 +47,7 @@ class MatchmakerActor extends Actor {
     case JoinGame(name) =>
       val originalSender = sender()
       implicit val timeout: Timeout = 5.seconds
-      Future.traverse(pending.toList) { a =>
+      Future.traverse(pending.toSet) { a =>
         ask(a, GetName).mapTo[String] map ((a, _))
       } onComplete {
         case Success(names) =>
@@ -67,10 +62,10 @@ class MatchmakerActor extends Actor {
   }
 
   def leave(users: Seq[ActorRef]) = {
-    val len = pending.length
+    val len = pending.size
     lobby --= users
     pending --= users
-    if (pending.length != len) {
+    if (pending.size != len) {
       sendRequestUpdate()
     }
   }
@@ -82,7 +77,7 @@ class MatchmakerActor extends Actor {
 
   def pendingNames = {
     implicit val timeout: Timeout = 5.seconds
-    val namesFuture = pending.toList map (a => ask(a, GetName).mapTo[String])
+    val namesFuture = pending.toList map (ask(_, GetName).mapTo[String])
     Future.sequence(namesFuture)
   }
 }
