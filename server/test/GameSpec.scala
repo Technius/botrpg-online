@@ -42,7 +42,7 @@ class GameSpec extends BotRpgSpec("GameSpec") {
 
     "end when player1 loses all health" in {
       gameActor.state = f.originalState.copy(
-        p1 = (gameActor.state.p1._1, Player(0, 0))
+        player1 = gameActor.state.player1.copy(health = 0, stamina = 0)
       )
       gameActor.processTurn(Wait, Wait)
       gameActor.playing shouldBe false
@@ -50,7 +50,7 @@ class GameSpec extends BotRpgSpec("GameSpec") {
 
     "end when player2 loses all health" in {
       gameActor.state = f.originalState.copy(
-        p2 = (gameActor.state.p2._1, Player(0, 0))
+        player2 = gameActor.state.player2.copy(health = 0, stamina = 0)
       )
       gameActor.processTurn(Wait, Wait)
       gameActor.playing shouldBe false
