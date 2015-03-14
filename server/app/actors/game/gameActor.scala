@@ -65,23 +65,16 @@ class GameActor(id: UUID, p1: ActorRef, p2: ActorRef) extends Actor {
       val a = sender()
       observers -= a
       if (playing) {
-        if (a == p1) winGame(Some(p2))
-        else if (a == p2) winGame(Some(p1))
+        if (a == p1) winGame(Defeat, Victory)
+        else if (a == p2) winGame(Victory, Defeat)
       }
       if (observers.length == 0) {
         self ! PoisonPill
       }
   }
 
-  def winGame(winnerOpt: Option[ActorRef]) = if (playing) {
-    val result: GameEnd = winnerOpt map { winner =>
-      val p1Win = winner == p1
-      val p2Win = winner == p2
-      require(p1Win || p2Win)
-      if (p1Win) GameEnd(Victory, Defeat)
-      else GameEnd(Defeat, Victory)
-    } getOrElse GameEnd(Draw, Draw)
-    observers foreach (_ ! result)
+  def winGame(p1Result: MatchResult, p2Result: MatchResult) = if (playing) {
+    observers foreach (_ ! GameEnd(p1Result, p2Result))
     playing = false
   }
 
@@ -94,14 +87,11 @@ class GameActor(id: UUID, p1: ActorRef, p2: ActorRef) extends Actor {
       turn = state.turn + 1
     )
 
-    val p1Lose = result.player1.health <= 0
-    val p2Lose = result.player2.health <= 0
-
     state = result
 
-    if (p1Lose && p2Lose) winGame(None)
-    else if (p1Lose) winGame(Some(p2))
-    else if (p2Lose) winGame(Some(p1))
+    Turn.resultOpt(result.player1, result.player2) foreach { t =>
+      winGame(t._1, t._2)
+    }
   }
 }
 

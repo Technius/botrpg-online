@@ -1,5 +1,7 @@
 package botrpg.common
 
+import botrpg.common.{ MatchResult => Result }
+
 object Turn {
 
   def resolve(
@@ -18,6 +20,15 @@ object Turn {
       health = math.max(0, health),
       stamina = math.min(100, math.max(0, stamina))
     )
+  }
+
+  def resultOpt(player1: Player, player2: Player): Option[(Result, Result)] = {
+    val p1Lose = player1.health <= 0
+    val p2Lose = player2.health <= 0
+    if (p1Lose && p2Lose) Some(Draw, Draw)
+    else if (p1Lose) Some(Defeat, Victory)
+    else if (p2Lose) Some(Victory, Defeat)
+    else None
   }
 
   def moveMessage(selfMove: Move, otherMove: Move): String =
