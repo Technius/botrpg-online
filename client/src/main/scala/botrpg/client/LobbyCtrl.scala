@@ -54,5 +54,7 @@ class LobbyCtrl(
       $connection.sendMessage(JoinGame(name))
     }
     $scope.name = name
+
+    $scope.getWaiting.call(null)
   }
 }

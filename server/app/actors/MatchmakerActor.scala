@@ -18,8 +18,8 @@ class MatchmakerActor extends Actor {
 
   def receive = {
     case JoinLobby =>
-      lobby += sender()
       sendRequestUpdate()
+      lobby += sender()
     case LeaveLobby => leave(Seq(sender()))
     case Disconnect(user) => self tell (LeaveLobby, user)
     case GetWaiting =>
