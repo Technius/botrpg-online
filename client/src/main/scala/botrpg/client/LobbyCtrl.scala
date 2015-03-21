@@ -13,6 +13,8 @@ trait LobbyScope extends Scope {
 
   var waiting: js.Array[String] = js.native
 
+  var playing: js.Array[String] = js.native
+
   var getWaiting: js.Function = js.native
 
   var requestGame: js.Function = js.native
@@ -34,14 +36,17 @@ class LobbyCtrl(
 
     socket.onmessage = { ev: MessageEvent =>
       read[SocketMessage](ev.data.toString).data match {
-        case WaitingPlayers(players) => $scope.waiting = players.toJSArray
+        case LobbyStatus(players, games) =>
+          $scope.waiting = players.toJSArray
+          $scope.playing = games.toJSArray
+          println(games)
         case GameReady(id, game) => $game.startGame(game, id)
         case _ =>
       }
       $scope.$apply()
     }
 
-    $scope.getWaiting = () => $connection.sendMessage(GetWaiting)
+    $scope.getWaiting = () => $connection.sendMessage(GetLobby)
     $scope.requestGame = () => {
       $connection.sendMessage(RequestGame)
       $scope.requestingGame = true

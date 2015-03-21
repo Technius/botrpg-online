@@ -20,7 +20,9 @@ case class GameReady(id: String, game: Game) extends Message
 
 case class GameUpdate(game: Game, moves: (Move, Move)) extends Message
 
-case class WaitingPlayers(waiting: List[String]) extends Message
+case class LobbyStatus(
+    waiting: List[String],
+    games: List[String]) extends Message
 
 case class GameEnd(p1Result: MatchResult, p2Result: MatchResult) extends Message
 
@@ -28,7 +30,7 @@ case class GameEnd(p1Result: MatchResult, p2Result: MatchResult) extends Message
 
 case class LoginReq(name: String) extends Message 
  
-case object GetWaiting extends Message 
+case object GetLobby extends Message 
 
 case object CancelRequestGame extends Message
  

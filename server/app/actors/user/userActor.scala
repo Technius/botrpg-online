@@ -65,7 +65,10 @@ class UserActor(
     case Event(msg, Playing(_, game)) =>
       game ! msg
       stay
-    case Event(w: WaitingPlayers, _: Matchmaking) =>
+    case Event(GetLobby, _: Matchmaking) =>
+      matchmaker ! GetLobby
+      stay
+    case Event(w: LobbyStatus, _: Matchmaking) =>
       sendMessage(w)
       stay
     case Event(FindGame, n: Matchmaking) =>
@@ -90,6 +93,7 @@ class UserActor(
 
   whenUnhandled {
     case Event(a, b) =>
+      println(s"USER: unhandled: $a in $b")
       stay
   }
 

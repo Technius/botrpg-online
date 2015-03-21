@@ -20,6 +20,8 @@ case class InitGame(game: ActorRef, id: String, initialState: Game)
 
 case class GameStatus(playing: Boolean, state: Game)
 
+case object GetGames
+
 case object GetGameStatus
 
 case object GetName

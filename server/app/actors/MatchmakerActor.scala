@@ -6,6 +6,7 @@ import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
 import botrpg.common._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import java.util.UUID
 import scala.collection.mutable.Set
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -22,17 +23,17 @@ class MatchmakerActor extends Actor {
       lobby += sender()
     case LeaveLobby => leave(Seq(sender()))
     case Disconnect(user) => self tell (LeaveLobby, user)
-    case GetWaiting =>
+    case GetLobby =>
       val originalSender = sender()
-      pendingNames map (WaitingPlayers(_)) pipeTo originalSender
+      pendingStatus pipeTo originalSender
     case CancelRequestGame =>
       pending -= sender()
       sendRequestUpdate()
     case RequestGame =>
       val user = sender()
       pending += user
-      val nameFut = pendingNames map (WaitingPlayers(_))
-      lobby.toVector foreach (nameFut pipeTo _)
+      val statusFut = pendingStatus
+      lobby.toVector foreach (statusFut pipeTo _)
     case FindGame =>
       val choices = pending.toVector
       if (choices.length > 0) {
@@ -57,27 +58,46 @@ class MatchmakerActor extends Actor {
         case fail => println(fail)
       }
     case msg @ StartGame(p1, p2) =>
-      leave(Seq(p1, p2))
-      context.actorSelection("../games") ! msg
+      implicit val timeout: Timeout = 5.seconds
+      val startFut = context.actorSelection("../games") ? msg
+      startFut onSuccess { case _ =>
+        leave(Seq(p1, p2))
+      }
   }
 
   def leave(users: Seq[ActorRef]) = {
-    val len = pending.size
+    val len = lobby.size
     lobby --= users
     pending --= users
-    if (pending.size != len) {
+    if (lobby.size != len) {
       sendRequestUpdate()
     }
   }
 
   def sendRequestUpdate() = {
-    val nameFut = pendingNames map (WaitingPlayers(_))
-    lobby.toList foreach (nameFut pipeTo _)
+    val statusFut = pendingStatus
+    lobby.toList foreach (statusFut pipeTo _)
   }
 
   def pendingNames = {
     implicit val timeout: Timeout = 5.seconds
     val namesFuture = pending.toList map (ask(_, GetName).mapTo[String])
     Future.sequence(namesFuture)
+  }
+
+  def pendingGames = {
+    implicit val timeout: Timeout = 5.seconds
+    ask(context.actorSelection("../games"), GetGames)
+      .mapTo[List[(UUID, ActorRef)]]
+      .map(_ map (_._1.toString))
+  }
+
+  def pendingStatus = {
+    val nameFut = pendingNames
+    val gameFut = pendingGames
+    for {
+      names <- nameFut
+      games <- gameFut
+    } yield LobbyStatus(names, games)
   }
 }

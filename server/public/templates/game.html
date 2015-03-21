@@ -1,18 +1,18 @@
 <div class="panel panel-primary">
   <div class="panel-heading">
-    {{game.player1.name}} vs {{game.player2.name}}
+    {{::game.player1.name}} vs {{::game.player2.name}}
   </div>
   <div class="panel-body">
     <p>Turn {{game.turn}}</p>
     <hr />
     <div class="row">
       <div class="col-xs-12 col-md-6">
-        <p><strong>{{game.player1.name}}</strong></p>
+        <p><strong>{{::game.player1.name}}</strong></p>
         <p>Health: {{game.player1.health}}</p>
         <p>Stamina: {{game.player1.stamina}}</p>
       </div>
       <div class="col-xs-12 col-md-6">
-        <p><strong>{{game.player2.name}}</strong></p>
+        <p><strong>{{::game.player2.name}}</strong></p>
         <p>Health: {{game.player2.health}}</p>
         <p>Stamina: {{game.player2.stamina}}</p>
       </div>
@@ -36,7 +36,7 @@
   </ul>
 </div>
 
-<div class="panel panel-default">
+<div class="panel panel-default" ng-show="player() != null">
   <div class="panel-body">
     <div ng-show="!madeMove() && !game.result">
       <button ng-class="{ 'disabled': player().stamina < 10 }" ng-click="moveAttack()" class="btn btn-default">
