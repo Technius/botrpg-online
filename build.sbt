@@ -2,7 +2,7 @@ name := """botrpg-online"""
 
 version := "0.0.1-SNAPSHOT"
 
-scalaVersion in Global := "2.11.5"
+scalaVersion in Global := "2.11.6"
 
 lazy val root = Project("root", file("."))
   .aggregate(client, server)
