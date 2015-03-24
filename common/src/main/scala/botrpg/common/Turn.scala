@@ -25,9 +25,9 @@ object Turn {
   def resultOpt(player1: Player, player2: Player): Option[(Result, Result)] = {
     val p1Lose = player1.health <= 0
     val p2Lose = player2.health <= 0
-    if (p1Lose && p2Lose) Some(Draw, Draw)
-    else if (p1Lose) Some(Defeat, Victory)
-    else if (p2Lose) Some(Victory, Defeat)
+    if (p1Lose && p2Lose) Some((Draw, Draw))
+    else if (p1Lose) Some((Defeat, Victory))
+    else if (p2Lose) Some((Victory, Defeat))
     else None
   }
 

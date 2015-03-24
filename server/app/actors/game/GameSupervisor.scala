@@ -21,7 +21,7 @@ class GameSupervisor extends Actor {
         GameActor.props(id, p1, p2), name = id.toString)
       games += (id -> game)
       context.watch(game)
-      sender() ! (id, game)
+      sender() ! (id -> game)
     case WatchGame(id) =>
       val originalSender = sender()
       games.toList find (_._1 == id) map (_._2) foreach { game =>

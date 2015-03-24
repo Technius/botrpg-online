@@ -40,7 +40,7 @@ class Connection($location: Location) extends Service {
     $location.path("/")
   }
 
-  def verifyLogin() = {
+  def verifyLogin(): Option[(WebSocket, String)] = {
     val opt = for {
       sock <- socket
       _name <- name

@@ -37,7 +37,7 @@ class GameCtrl(
 
   $scope.log = js.Array()
 
-  $connection.verifyLogin() map { case (socket, name) =>
+  $connection.verifyLogin() map { case (socket: WebSocket, name: String) =>
     $game.game map { game =>
       $scope.game = game
       $scope.madeMove = () => $game.madeMove

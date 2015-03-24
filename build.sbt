@@ -44,7 +44,8 @@ lazy val client = Project("client", file("client"))
     libraryDependencies ++= Seq(
       "biz.enef" %%% "scalajs-angulate" % "0.1",
       "com.lihaoyi" %%% "upickle" % "0.2.6"
-    )
+    ),
+    scalacOptions += "-Xlint:-infer-any" // workaround for possible scalac bug
   )
   .settings(commonSrcDirs: _*)
 
@@ -52,5 +53,6 @@ scalacOptions in Global ++= Seq(
   "-unchecked",
   "-deprecation",
   "-feature",
+  "-Xlint",
   "-Xfatal-warnings"
 )
