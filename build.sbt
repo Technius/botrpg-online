@@ -22,8 +22,8 @@ lazy val server = Project("server", file("server"))
       "org.webjars" % "angular-ui-bootstrap" % "0.12.0",
       "org.webjars" % "bootstrap" % "3.3.2",
       "org.webjars" % "bootswatch-paper" % "3.3.1+2",
-      "com.lihaoyi" %% "upickle" % "0.2.6",
-      "org.scala-js" %% "scalajs-stubs" % "0.6.0",
+      "com.lihaoyi" %% "upickle" % "0.2.8",
+      "org.scala-js" %% "scalajs-stubs" % "0.6.2",
       cache,
       ws,
       "org.scalatest" %% "scalatest" % "2.2.1" % "test",
@@ -43,7 +43,7 @@ lazy val client = Project("client", file("client"))
   .settings(
     libraryDependencies ++= Seq(
       "biz.enef" %%% "scalajs-angulate" % "0.1",
-      "com.lihaoyi" %%% "upickle" % "0.2.6"
+      "com.lihaoyi" %%% "upickle" % "0.2.8"
     ),
     scalacOptions += "-Xlint:-infer-any" // workaround for possible scalac bug
   )
