@@ -34,8 +34,8 @@ class GameSupervisor extends Actor {
     case GetGames =>
       Future.traverse(games.toList) { t =>
         implicit val timeout = Timeout(1.second)
-        ask(t._2, GetGameStatus).mapTo[GameStatus] map (t -> _.playing)
-      } map (_ filter (_._2) map (_._1)) pipeTo sender()
+        ask(t._2, GetGameStatus).mapTo[GameStatus] map ((t._1, t._2,  _))
+      } map (_ filter (_._3.playing)) pipeTo sender()
     case Disconnect(a) => games foreach (_._2 tell (LeaveGame, a))
     case Terminated(a) => games --= games filter (_._2 == a)
   }

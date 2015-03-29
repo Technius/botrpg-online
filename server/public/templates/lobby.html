@@ -20,7 +20,7 @@
   <div class="panel-heading">Currently Playing</div>
   <ul class="list-group">
     <li class="list-group-item clearfix" ng-repeat="game in playing track by game">
-      id={{game}}
+      {{::game.player1}} vs {{::game.player2}}
     </li>
   </ul>
 </div>

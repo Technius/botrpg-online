@@ -22,7 +22,7 @@ case class GameUpdate(game: Game, moves: (Move, Move)) extends Message
 
 case class LobbyStatus(
     waiting: List[String],
-    games: List[String]) extends Message
+    games: List[GameSummary]) extends Message
 
 case class GameEnd(p1Result: MatchResult, p2Result: MatchResult) extends Message
 

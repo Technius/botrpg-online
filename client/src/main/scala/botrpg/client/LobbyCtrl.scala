@@ -13,7 +13,7 @@ trait LobbyScope extends Scope {
 
   var waiting: js.Array[String] = js.native
 
-  var playing: js.Array[String] = js.native
+  var playing: js.Array[GameSummary] = js.native
 
   var getWaiting: js.Function = js.native
 

@@ -85,11 +85,11 @@ class MatchmakerActor extends Actor {
     Future.sequence(namesFuture)
   }
 
-  def pendingGames = {
+  def pendingGames: Future[List[(String, Game)]] = {
     implicit val timeout: Timeout = 5.seconds
     ask(context.actorSelection("../games"), GetGames)
-      .mapTo[List[(UUID, ActorRef)]]
-      .map(_ map (_._1.toString))
+      .mapTo[List[(UUID, ActorRef, GameStatus)]]
+      .map(_ map (t => t._1.toString -> t._3.state))
   }
 
   def pendingStatus = {
@@ -98,6 +98,6 @@ class MatchmakerActor extends Actor {
     for {
       names <- nameFut
       games <- gameFut
-    } yield LobbyStatus(names, games)
+    } yield LobbyStatus(names, games map (GameSummary from _))
   }
 }
