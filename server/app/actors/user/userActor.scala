@@ -7,6 +7,7 @@ import akka.util.Timeout
 import botrpg.common._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.concurrent.duration._
+import scala.util.Try
 import upickle._
 
 case object NoUser extends State
@@ -32,13 +33,9 @@ class UserActor(
 
   override def receive = {
     case msg: String =>
-      val readOpt = try {
-        Some(read[SocketMessage](msg).data)
-      } catch {
-        case _: upickle.Invalid => None
-      }
-      readOpt foreach (super.receive(_))
-    case msg => super.receive(msg)
+      Try(read[SocketMessage](msg).data) foreach (super.receive(_))
+    case msg =>
+      super.receive(msg)
   }
 
   startWith(NoUser, NoData)
