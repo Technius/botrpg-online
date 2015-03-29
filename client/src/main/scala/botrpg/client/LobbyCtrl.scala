@@ -23,6 +23,8 @@ trait LobbyScope extends Scope {
 
   var playGame: js.Function = js.native
 
+  var watchGame: js.Function = js.native
+
   var name: String = js.native
 }
 
@@ -57,6 +59,9 @@ class LobbyCtrl(
     }
     $scope.playGame = { name: String =>
       $connection.sendMessage(JoinGame(name))
+    }
+    $scope.watchGame = { id: String =>
+      $connection.sendMessage(WatchGame(id))
     }
     $scope.name = name
 

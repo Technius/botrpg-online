@@ -21,6 +21,9 @@
   <ul class="list-group">
     <li class="list-group-item clearfix" ng-repeat="game in playing track by game">
       {{::game.player1}} vs {{::game.player2}}
+      <button class="btn btn-primary pull-right" ng-click="watchGame(game.id)">
+        Watch
+      </button>
     </li>
   </ul>
 </div>

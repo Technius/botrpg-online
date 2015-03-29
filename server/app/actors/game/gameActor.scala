@@ -60,7 +60,10 @@ class GameActor(id: UUID, p1: ActorRef, p2: ActorRef) extends Actor {
     case GetGameStatus =>
       sender() ! GameStatus(playing, state)
     case WatchGame(_) =>
-      if (playing) observers += sender()
+      if (playing) {
+        sender() ! InitGame(self, id.toString, state)
+        observers += sender()
+      }
     case LeaveGame =>
       val a = sender()
       observers -= a

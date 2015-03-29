@@ -22,15 +22,8 @@ class GameSupervisor extends Actor {
       games += (id -> game)
       context.watch(game)
       sender() ! (id -> game)
-    case WatchGame(id) =>
-      val originalSender = sender()
-      games.toList find (_._1 == id) map (_._2) foreach { game =>
-        implicit val timeout = Timeout(1.second)
-        val statusFuture = ask(game, GetGameStatus).mapTo[GameStatus]
-        statusFuture onSuccess {
-          case s: GameStatus => originalSender ! s
-        }
-      }
+    case msg @ WatchGame(id) =>
+      games.toList find (_._1.toString == id) map (_._2) foreach (_ forward msg)
     case GetGames =>
       Future.traverse(games.toList) { t =>
         implicit val timeout = Timeout(1.second)

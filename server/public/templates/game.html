@@ -19,7 +19,12 @@
     </div>
     <div ng-show="game.result">
       <hr />
-      <p><strong>{{game.result}}!</strong></p>
+      <p ng-show="game.result.self"><strong>{{game.result.self}}!</strong></p>
+      <p ng-show="!game.result.self">
+        {{game.player1.name}}: <strong>{{game.result.p1}}!</strong>
+        <br />
+        {{game.player2.name}}: <strong>{{game.result.p2}}!</strong>
+      </p>
       <p><button ng-click="leaveGame()" class="btn btn-primary">Return to lobby</button></p>
     </div>
   </div>

@@ -62,14 +62,17 @@ class GameService(
         val localResult = whichPlayer(state) map { p1OrP2 =>
           if (p1OrP2) result.p1Result
           else result.p2Result
-        } getOrElse result.p1Result
-        new GameState(state.game, Some(localResult))
+        }
+        new GameState(state.game, localResult, Some(result))
       }
     case msg => println("Unrecognized message: " + msg)
   }
 
   def updateState(state: Game) = {
-    val newState = new GameState(state, _game flatMap(_.result))
+    val newState = new GameState(
+      state,
+      _game flatMap(_.localResult),
+      _game.flatMap(_.result))
     _game = Some(newState)
     newState
   }

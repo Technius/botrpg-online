@@ -30,6 +30,7 @@ class UserActor(
     connections: ActorRef) extends FSM[State, Data] {
 
   val matchmaker = context.actorSelection("/user/system/matchmaker")
+  val gameSupervisor = context.actorSelection("/user/system/games")
 
   override def receive = {
     case msg: String =>
@@ -77,6 +78,9 @@ class UserActor(
     case Event(RequestGame, n: Matchmaking) =>
       matchmaker ! RequestGame
       stay using Matchmaking(n.name, false)
+    case Event(w: WatchGame, n: Matchmaking) =>
+      gameSupervisor ! w
+      stay using n
     case Event(GetName, n: Name) =>
       sender() ! n.name
       stay
