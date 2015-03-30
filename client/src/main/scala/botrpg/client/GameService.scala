@@ -71,8 +71,9 @@ class GameService(
   def updateState(state: Game) = {
     val newState = new GameState(
       state,
-      _game flatMap(_.localResult),
-      _game.flatMap(_.result))
+      _game flatMap (_.localResult),
+      _game flatMap (_.result)
+    )
     _game = Some(newState)
     newState
   }

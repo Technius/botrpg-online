@@ -7,12 +7,18 @@
     <hr />
     <div class="row">
       <div class="col-xs-12 col-md-6">
-        <p><strong>{{::game.player1.name}}</strong></p>
+        <p>
+          <strong>{{::game.player1.name}}</strong>
+          <span ng-show="::player() == game.player1">(You)</span>
+        </p>
         <p>Health: {{game.player1.health}}</p>
         <p>Stamina: {{game.player1.stamina}}</p>
       </div>
       <div class="col-xs-12 col-md-6">
-        <p><strong>{{::game.player2.name}}</strong></p>
+        <p>
+          <strong>{{::game.player2.name}}</strong>
+          <span ng-show="::player() == game.player2">(You)</span>
+        </p>
         <p>Health: {{game.player2.health}}</p>
         <p>Stamina: {{game.player2.stamina}}</p>
       </div>
