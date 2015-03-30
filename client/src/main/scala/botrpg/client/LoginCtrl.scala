@@ -10,6 +10,7 @@ import upickle._
 trait LoginScope extends Scope {
   var name: String = js.native
   var login: js.Function = js.native
+  var loggingIn: Boolean = js.native
 }
 
 class LoginCtrl(
@@ -17,9 +18,12 @@ class LoginCtrl(
     $location: Location,
     $connection: Connection) extends Controller {
   $scope.name = ""
+  $scope.loggingIn = false
   $scope.login = { () =>
-    if (!$scope.name.isEmpty) {
+    if (!$scope.loggingIn && !$scope.name.isEmpty) {
+      $scope.loggingIn = true
       $connection.openConnection($scope.name).onmessage = { ev: MessageEvent =>
+        $scope.loggingIn = false
         read[SocketMessage](ev.data.toString).data match {
           case LoggedIn =>
             $location.path("/lobby")

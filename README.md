@@ -28,7 +28,6 @@ In no particular order:
   * Cleanup `GameCtrl` and `GameService`
   * Always put data of self on the left/top in battles
   * Find way to detect if user changes scroll to bottom in action autoscroll
-  * Add progress indicators
 * Server
   * Cleanup websocket communication
   * Divide `UserActor` into actors for inbound, outbound, and internal

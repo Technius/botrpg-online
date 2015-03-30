@@ -7,9 +7,10 @@
       <div class="input-group">
         <input class="form-control" ng-model="name" placeholder="Name" />
         <span class="input-group-btn">
-          <button class="btn btn-default">Login</button>
+          <button ng-disabled="loggingIn" class="btn btn-default">Login</button>
         </span>
       </div>
+      <div ng-show="loggingIn">Logging in...</div>
     </form>
   </div>
 </div>
