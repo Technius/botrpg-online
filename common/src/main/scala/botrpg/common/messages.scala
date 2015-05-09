@@ -16,6 +16,8 @@ case object Defeat extends MatchResult
 
 case object LoggedIn extends Message
 
+case class LoginFail(reason: String) extends Message
+
 case class GameReady(id: String, game: Game) extends Message
 
 case class GameUpdate(game: Game, moves: (Move, Move)) extends Message

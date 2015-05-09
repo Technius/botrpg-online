@@ -11,6 +11,7 @@ import scala.util.Try
 import upickle._
 
 case object NoUser extends State
+case object AwaitingAuthorization extends State
 case object WithUser extends State
 
 case object NoData extends Data
@@ -18,6 +19,8 @@ case object NoData extends Data
 trait Name {
   def name: String
 }
+
+case class LoginRequestData(name: String) extends Data
 
 case class Matchmaking(
     override val name: String, searching: Boolean) extends Data with Name
@@ -42,7 +45,17 @@ class UserActor(
   startWith(NoUser, NoData)
 
   when(NoUser) {
-    case Event(LoginReq(name), NoData) =>
+    case Event(LoginReq(name), _) =>
+      implicit val timeout = Timeout(5.seconds)
+      connections ! FindUser(name)
+      goto(AwaitingAuthorization) using LoginRequestData(name)
+  }
+
+  when(AwaitingAuthorization) {
+    case Event(Some(_), LoginRequestData(name)) =>
+      sendMessage(LoginFail(s"$name is already taken! Choose another name."))
+      goto(NoUser) using NoData
+    case Event(None, LoginRequestData(name)) =>
       sendMessage(LoggedIn)
       connections ! Connect
       matchmaker ! JoinLobby

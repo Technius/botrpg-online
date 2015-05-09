@@ -27,10 +27,14 @@ class LoginCtrl(
         read[SocketMessage](ev.data.toString).data match {
           case LoggedIn =>
             $location.path("/lobby")
-            $scope.$apply()
+          case LoginFail(reason) =>
+            $connection.logout()
+            alert("Failed to log in: " + reason) // TODO: use HTML
           case msg =>
+            $connection.logout()
             alert("Error: received unknown response: " + msg.toString)
         }
+        $scope.$apply()
       }
     }
   }

@@ -10,6 +10,8 @@ case object Connect
 
 case class Disconnect(user: ActorRef)
 
+case class FindUser(name: String)
+
 case object JoinLobby
 
 case object LeaveLobby
