@@ -15,13 +15,16 @@ class GameSupervisor extends Actor {
   val games = scala.collection.mutable.ArrayBuffer[(UUID, ActorRef)]()
 
   def receive = {
-    case StartGame(p1, p2) =>
+    case msg @ StartGame(p1, p2) =>
       val id = UUID.randomUUID
-      val game = context.actorOf(
-        GameActor.props(id, p1, p2), name = id.toString)
+      val game = context.actorOf(GameActor.props(id), name = id.toString)
       games += (id -> game)
       context.watch(game)
-      sender() ! (id -> game)
+      implicit val timeout = Timeout(5.seconds)
+      val originalSender = sender()
+      (game ? msg).mapTo[GameStatus] onSuccess { case _ =>
+        originalSender ! (id -> game)
+      }
     case msg @ WatchGame(id) =>
       games.toList find (_._1.toString == id) map (_._2) foreach (_ forward msg)
     case GetGames =>
