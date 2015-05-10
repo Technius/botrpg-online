@@ -17,6 +17,8 @@ class GameSpec extends BotRpgSpec("GameSpec") {
     val outProbes @ List(probe1, probe2) = List(TestProbe(), TestProbe())
     val List(player1, player2) = outProbes map (p => TestFSMRef(
       new UserActor(p.ref, matchProbe.ref)))
+
+    import actors.user.UserActor.Internal._
     player1.setState(WithUser, Matchmaking("player1", false)) //workaround
     player2.setState(WithUser, Matchmaking("player2", false))
     val game = TestActorRef(new GameActor(UUID.randomUUID(), player1, player2))

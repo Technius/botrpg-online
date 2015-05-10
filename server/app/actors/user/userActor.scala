@@ -47,6 +47,9 @@ class UserActor(
   }
 
   when(WithUser) {
+    case Event(GetName, n: Name) =>
+      sender() ! n.name
+      stay
     case Event(state: GameUpdate, _: Playing) =>
       sendMessage(state)
       stay
@@ -78,9 +81,6 @@ class UserActor(
     case Event(w: WatchGame, n: Matchmaking) =>
       gameSupervisor ! w
       stay using n
-    case Event(GetName, n: Name) =>
-      sender() ! n.name
-      stay
     case Event(InitGame(game, id, state), Matchmaking(name, _)) =>
       sendMessage(GameReady(id, state))
       stay using Playing(name, game)

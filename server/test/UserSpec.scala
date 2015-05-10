@@ -8,6 +8,7 @@ import models._
 import scala.concurrent._
 import scala.concurrent.duration._
 import scala.language.reflectiveCalls
+import actors.user.UserActor.Internal._
 
 class UserSpec extends BotRpgSpec("UserSpec") {
 
