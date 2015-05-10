@@ -27,7 +27,3 @@ case object GetGames
 case object GetGameStatus
 
 case object GetName
-
-trait State
-
-trait Data

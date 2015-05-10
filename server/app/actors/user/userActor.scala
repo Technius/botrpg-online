@@ -10,23 +10,7 @@ import scala.concurrent.duration._
 import scala.util.Try
 import upickle._
 
-case object NoUser extends State
-case object AwaitingAuthorization extends State
-case object WithUser extends State
-
-case object NoData extends Data
-
-trait Name {
-  def name: String
-}
-
-case class LoginRequestData(name: String) extends Data
-
-case class Matchmaking(
-    override val name: String, searching: Boolean) extends Data with Name
-
-case class Playing(
-    override val name: String, game: ActorRef) extends Data with Name
+import UserActor.Internal._
 
 class UserActor(
     out: ActorRef,
@@ -117,6 +101,30 @@ class UserActor(
 }
 
 object UserActor {
+
   def props(out: ActorRef, connections: ActorRef) =
     Props(new UserActor(out, connections))
+
+  object Internal {
+    sealed trait State
+    sealed trait Data
+
+    case object NoUser extends State
+    case object AwaitingAuthorization extends State
+    case object WithUser extends State
+
+    sealed trait Name extends Data {
+      def name: String
+    }
+    
+    case object NoData extends Data
+
+    case class LoginRequestData(name: String) extends Data
+
+    case class Matchmaking(
+      override val name: String, searching: Boolean) extends Name
+
+    case class Playing(
+      override val name: String, game: ActorRef) extends Name
+  }
 }

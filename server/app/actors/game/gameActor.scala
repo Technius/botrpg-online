@@ -1,6 +1,6 @@
 package actors.game
 
-import actors.{ State, Data, GameStatus, GetGameStatus, GetName, InitGame }
+import actors.{ GameStatus, GetGameStatus, GetName, InitGame }
 import akka.actor._
 import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
