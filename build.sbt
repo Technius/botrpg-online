@@ -33,10 +33,17 @@ lazy val server = Project("server", file("server"))
     pipelineStages := Seq(scalaJSProd, digest, gzip),
     sources in (Compile, doc) := Seq.empty,
     publishArtifact in (Compile, packageDoc) := false,
-    publishArtifact in packageDoc := false
+    publishArtifact in packageDoc := false,
+    dockerRepository := Some("technius"),
+    packageName in Docker := "botrpg-server",
+    version in Docker := "latest",
+    maintainer in Docker := "Bryan Tan <techniux@gmail.com>",
+    dockerBaseImage := "williamyeh/java7:latest",
+    dockerExposedPorts := Seq(9000),
   )
   .settings(commonSrcDirs: _*)
   .aggregate(client)
+  .enablePlugins(DockerPlugin)
 
 lazy val client = Project("client", file("client"))
   .enablePlugins(ScalaJSPlugin, ScalaJSPlay)
@@ -54,5 +61,8 @@ scalacOptions in Global ++= Seq(
   "-deprecation",
   "-feature",
   "-Xlint",
-  "-Xfatal-warnings"
+  "-Xfatal-warnings",
+  "-target:jvm-1.7"
 )
+
+javacOptions in Global ++= Seq("-source", "1.7", "-target", "1.7")
