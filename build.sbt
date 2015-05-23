@@ -39,7 +39,7 @@ lazy val server = Project("server", file("server"))
     version in Docker := "latest",
     maintainer in Docker := "Bryan Tan <techniux@gmail.com>",
     dockerBaseImage := "williamyeh/java7:latest",
-    dockerExposedPorts := Seq(9000),
+    dockerExposedPorts := Seq(9000)
   )
   .settings(commonSrcDirs: _*)
   .aggregate(client)
