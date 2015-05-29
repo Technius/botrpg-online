@@ -1,6 +1,6 @@
 package botrpg.client
 
-import biz.enef.angular._
+import biz.enef.angulate._
 import botrpg.common._
 import org.scalajs.dom._
 import scala.scalajs.js

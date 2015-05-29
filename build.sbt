@@ -49,7 +49,7 @@ lazy val client = Project("client", file("client"))
   .enablePlugins(ScalaJSPlugin, ScalaJSPlay)
   .settings(
     libraryDependencies ++= Seq(
-      "biz.enef" %%% "scalajs-angulate" % "0.1",
+      "biz.enef" %%% "scalajs-angulate" % "0.2",
       "com.lihaoyi" %%% "upickle" % "0.2.8"
     ),
     scalacOptions += "-Xlint:-infer-any" // workaround for possible scalac bug

@@ -1,7 +1,7 @@
 package botrpg.client
 
-import biz.enef.angular.Service
-import biz.enef.angular.core.Location
+import biz.enef.angulate.Service
+import biz.enef.angulate.core.Location
 import botrpg.common._
 import org.scalajs.dom._
 import upickle._

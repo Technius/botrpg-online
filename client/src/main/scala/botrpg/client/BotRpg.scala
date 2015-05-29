@@ -1,7 +1,7 @@
 package botrpg.client
 
-import biz.enef.angular._
-import biz.enef.angular.ext.{ Route, RouteProvider }
+import biz.enef.angulate._
+import biz.enef.angulate.ext.{ Route, RouteProvider }
 import scala.scalajs.js
 import scala.scalajs.js.JSApp
 import scala.scalajs.js.annotation.JSExport
@@ -11,7 +11,7 @@ import directive._
 @JSExport("BotRpg")
 object BotRpg extends JSApp {
   def main(): Unit = {
-    val module = Angular.module("BotRpg", Seq("ngRoute"))
+    val module = angular.createModule("BotRpg", Seq("ngRoute"))
 
     module.serviceOf[Connection]("$connection")
     module.serviceOf[GameService]("$game")

@@ -1,6 +1,6 @@
 package botrpg.client
 
-import biz.enef.angular._
+import biz.enef.angulate._
 import scalajs.js
 
 trait NavbarScope extends Scope {
