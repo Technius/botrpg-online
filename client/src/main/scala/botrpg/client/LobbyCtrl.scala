@@ -5,7 +5,7 @@ import botrpg.common._
 import org.scalajs.dom._
 import scala.scalajs.js
 import scala.scalajs.js.JSConverters._
-import upickle._
+import upickle.default._
 
 trait LobbyScope extends Scope {
 

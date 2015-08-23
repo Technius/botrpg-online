@@ -5,7 +5,7 @@ import biz.enef.angulate.core.Location
 import botrpg.common._
 import org.scalajs.dom._
 import scala.scalajs.js
-import upickle._
+import upickle.default._
 
 trait LoginScope extends Scope {
   var name: String = js.native

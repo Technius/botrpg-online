@@ -4,7 +4,7 @@ import biz.enef.angulate.Service
 import biz.enef.angulate.core.Location
 import botrpg.common._
 import org.scalajs.dom._
-import upickle._
+import upickle.default._
 
 class Connection($location: Location) extends Service {
 

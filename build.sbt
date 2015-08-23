@@ -2,7 +2,7 @@ name := """botrpg-online"""
 
 version := "0.0.1-SNAPSHOT"
 
-scalaVersion in Global := "2.11.6"
+scalaVersion in Global := "2.11.7"
 
 lazy val root = Project("root", file("."))
   .aggregate(client, server)
@@ -22,7 +22,7 @@ lazy val server = Project("server", file("server"))
       "org.webjars" % "angular-ui-bootstrap" % "0.12.0",
       "org.webjars" % "bootstrap" % "3.3.2",
       "org.webjars" % "bootswatch-paper" % "3.3.1+2",
-      "com.lihaoyi" %% "upickle" % "0.2.8",
+      "com.lihaoyi" %% "upickle" % "0.3.5",
       "org.scala-js" %% "scalajs-stubs" % "0.6.2",
       cache,
       ws,
@@ -50,7 +50,7 @@ lazy val client = Project("client", file("client"))
   .settings(
     libraryDependencies ++= Seq(
       "biz.enef" %%% "scalajs-angulate" % "0.2",
-      "com.lihaoyi" %%% "upickle" % "0.2.8"
+      "com.lihaoyi" %%% "upickle" % "0.3.5"
     ),
     scalacOptions += "-Xlint:-infer-any" // workaround for possible scalac bug
   )
@@ -61,8 +61,5 @@ scalacOptions in Global ++= Seq(
   "-deprecation",
   "-feature",
   "-Xlint",
-  "-Xfatal-warnings",
-  "-target:jvm-1.7"
+  "-Xfatal-warnings"
 )
-
-javacOptions in Global ++= Seq("-source", "1.7", "-target", "1.7")

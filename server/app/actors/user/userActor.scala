@@ -8,7 +8,7 @@ import botrpg.common._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.concurrent.duration._
 import scala.util.Try
-import upickle._
+import upickle.default._
 
 import UserActor.Internal._
 
