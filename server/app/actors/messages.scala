@@ -6,7 +6,7 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import play.api.mvc.WebSocket.FrameFormatter
 
-case object Connect
+case class Connect(name: String)
 
 case class Disconnect(user: ActorRef)
 

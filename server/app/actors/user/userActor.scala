@@ -41,7 +41,7 @@ class UserActor(
       goto(NoUser) using NoData
     case Event(None, LoginRequestData(name)) =>
       sendMessage(LoggedIn)
-      connections ! Connect
+      connections ! Connect(name)
       matchmaker ! JoinLobby
       goto(WithUser) using Matchmaking(name, false)
   }

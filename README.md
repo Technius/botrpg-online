@@ -34,6 +34,7 @@ In no particular order:
   * Add chat feature
   * Implement a real login system
   * Automatically force a draw if turn exceeds a certain number (30?)
+  * Improve concurrency by removing all the asking
 * Shared Code
   * Use traits to categorize messages
   * Move game logic from server to shared code for possible 'AI sandboxing'
