@@ -36,9 +36,10 @@ lazy val server = Project("server", file("server"))
     publishArtifact in packageDoc := false,
     dockerRepository := Some("technius"),
     packageName in Docker := "botrpg-server",
-    version in Docker := "latest",
     maintainer in Docker := "Bryan Tan <techniux@gmail.com>",
-    dockerBaseImage := "williamyeh/java7:latest",
+    dockerUpdateLatest := true,
+    dockerBaseImage := "java:8-jre",
+    dockerEntrypoint in Docker := Seq("sh", "-c", "bin/server"),
     dockerExposedPorts := Seq(9000)
   )
   .settings(commonSrcDirs: _*)
