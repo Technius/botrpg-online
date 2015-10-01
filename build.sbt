@@ -7,23 +7,29 @@ scalaVersion in Global := "2.11.7"
 lazy val root = Project("root", file("."))
   .aggregate(client, server)
 
-lazy val common = Project("common", file("common"))
+lazy val common = (crossProject.crossType(CrossType.Pure) in file("common"))
+  .settings(
+    libraryDependencies ++= Seq(
+      "com.lihaoyi" %%% "upickle" % "0.3.5"
+    )
+  )
+  .jvmConfigure(_.settings(
+    libraryDependencies += "org.scala-js" %% "scalajs-stubs" % "0.6.2"
+  ))
+  .jsConfigure(_ enablePlugins ScalaJSPlay)
 
-def commonSrcDirs = Seq(
-  unmanagedSourceDirectories in Compile += baseDirectory.value.getAbsoluteFile / ".." / "common" / "src" / "main" / "scala",
-  unmanagedSourceDirectories in Test += baseDirectory.value.getAbsoluteFile / ".." / "common" / "src" / "test" / "scala"
-)
+lazy val commonJvm = common.jvm
+
+lazy val commonJs = common.js
 
 lazy val server = Project("server", file("server"))
-  .enablePlugins(PlayScala)
+  .enablePlugins(PlayScala, DockerPlugin)
   .settings(
     libraryDependencies ++= Seq(
       "org.webjars" % "angularjs" % "1.3.11",
       "org.webjars" % "angular-ui-bootstrap" % "0.12.0",
       "org.webjars" % "bootstrap" % "3.3.2",
       "org.webjars" % "bootswatch-paper" % "3.3.1+2",
-      "com.lihaoyi" %% "upickle" % "0.3.5",
-      "org.scala-js" %% "scalajs-stubs" % "0.6.2",
       cache,
       ws,
       "org.scalatest" %% "scalatest" % "2.2.1" % "test",
@@ -42,20 +48,19 @@ lazy val server = Project("server", file("server"))
     dockerEntrypoint in Docker := Seq("sh", "-c", "bin/server"),
     dockerExposedPorts := Seq(9000)
   )
-  .settings(commonSrcDirs: _*)
   .aggregate(client)
-  .enablePlugins(DockerPlugin)
+  .dependsOn(commonJvm)
+
 
 lazy val client = Project("client", file("client"))
   .enablePlugins(ScalaJSPlugin, ScalaJSPlay)
   .settings(
     libraryDependencies ++= Seq(
-      "biz.enef" %%% "scalajs-angulate" % "0.2",
-      "com.lihaoyi" %%% "upickle" % "0.3.5"
+      "biz.enef" %%% "scalajs-angulate" % "0.2"
     ),
     scalacOptions += "-Xlint:-infer-any" // workaround for possible scalac bug
   )
-  .settings(commonSrcDirs: _*)
+  .dependsOn(commonJs)
 
 scalacOptions in Global ++= Seq(
   "-unchecked",
