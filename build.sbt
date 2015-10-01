@@ -14,7 +14,7 @@ lazy val common = (crossProject.crossType(CrossType.Pure) in file("common"))
     )
   )
   .jvmConfigure(_.settings(
-    libraryDependencies += "org.scala-js" %% "scalajs-stubs" % "0.6.2"
+    libraryDependencies += "org.scala-js" %% "scalajs-stubs" % "0.6.4"
   ))
   .jsConfigure(_ enablePlugins ScalaJSPlay)
 
@@ -32,8 +32,8 @@ lazy val server = Project("server", file("server"))
       "org.webjars" % "bootswatch-paper" % "3.3.1+2",
       cache,
       ws,
-      "org.scalatest" %% "scalatest" % "2.2.1" % "test",
-      "com.typesafe.akka" %% "akka-testkit" % "2.3.4" % "test"
+      "org.scalatest" %% "scalatest" % "2.2.4" % "test",
+      "com.typesafe.akka" %% "akka-testkit" % "2.3.14" % "test"
     ),
     scalaJSProjects := Seq(client),
     pipelineStages := Seq(scalaJSProd, digest, gzip),
